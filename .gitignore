@@ -1,3 +1,10 @@
 .DS_Store
 Thumbs.db
 *.log
+
+# Packaged LÖVE games
+*.love
+
+# Temporary files
+*.tmp
+*.swp
