@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "abyo-software.love2d-dev-tools",
-    "sumneko.lua"
+    "sumneko.lua",
+    "JohnnyMorganz.stylua"
   ]
 }

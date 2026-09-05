@@ -10,6 +10,12 @@ Install LÖVE, clone the repository, then run from the project folder:
 love .
 ```
 
+### Code style
+
+Lua files use [StyLua](https://github.com/JohnnyMorganz/StyLua) with the shared
+configuration in `.stylua.toml`. Install the recommended VS Code extension to
+format automatically on save. Other editors can use the same StyLua config.
+
 ## Early goals
 
 - Catch random fish
