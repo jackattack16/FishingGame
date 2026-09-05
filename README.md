@@ -14,7 +14,8 @@ love .
 
 Lua files use [StyLua](https://github.com/JohnnyMorganz/StyLua) with the shared
 configuration in `.stylua.toml`. Install the recommended VS Code extension to
-format automatically on save. Other editors can use the same StyLua config.
+format automatically on save. GitHub Actions checks the same formatting rules
+on every push and pull request. Other editors can use the same StyLua config.
 
 ## Early goals
 
