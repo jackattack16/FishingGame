@@ -10,3 +10,4 @@ Thumbs.db
 *.swp
 
 _love2d_tools_bridge.lua
+.love2d-tools-port
