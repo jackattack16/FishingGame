@@ -9,5 +9,10 @@ end
 function love.update(dt) end
 
 function love.draw()
+	local background = love.graphics.newImage("assets/background.png")
+	local background_x_scale = love.graphics.getWidth() / background:getWidth()
+	local background_y_scale = love.graphics.getHeight() / background:getHeight()
+
+	love.graphics.draw(background, 0, 0, 0, background_x_scale, background_y_scale)
 	love.graphics.print("FishingGame", 24, 24)
 end
