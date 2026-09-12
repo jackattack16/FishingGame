@@ -8,3 +8,5 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.swp
+
+_love2d_tools_bridge.lua
