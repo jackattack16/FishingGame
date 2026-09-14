@@ -6,6 +6,11 @@ function love.load()
 	RNG:setSeed(os.time()) -- set the seed so runs can be reproduced in the future
 
 	fish_to_catch = 5
+	background_image = love.graphics.newImage("assets/background.png")
+	love.graphics.setDefaultFilter("nearest", "nearest")
+	love.window.setMode(background_image:getWidth(), background_image:getHeight(), {
+		resizable = true,
+	})
 end
 
 function love.update(dt) end
@@ -18,11 +23,13 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.draw()
-	local background = love.graphics.newImage("assets/background.png")
-	local background_x_scale = love.graphics.getWidth() / background:getWidth()
-	local background_y_scale = love.graphics.getHeight() / background:getHeight()
+	local scale = math.max(
+		love.graphics.getWidth() / background_image:getWidth(),
+		love.graphics.getHeight() / background_image:getHeight()
+	)
 
-	love.graphics.draw(background, 0, 0, 0, background_x_scale, background_y_scale)
-	love.graphics.print('FishingGame, press space to "catch" a fish', 24, 24)
-	love.graphics.print("Fish left: " .. fish_to_catch, 25, love.graphics.getHeight() - 50)
+	local x = (love.graphics.getWidth() - background_image:getWidth() * scale) / 2
+	local y = (love.graphics.getHeight() - background_image:getHeight() * scale) / 2
+
+	love.graphics.draw(background_image, x, y, 0, scale, scale)
 end
