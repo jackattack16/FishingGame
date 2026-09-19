@@ -1,26 +1,31 @@
-local fish = require("src.fish")
+local FISH = require("src.fish")
+local MATH_HELPERS = require("src.math_helpers")
 
 local G = {}
 
-function G.catch_fish()
-	local random_number = RNG:random()
-	local fish_rarity = 1
-	if random_number >= 0.55 and random_number < 0.75 then
-		fish_rarity = 2 -- uncommon
-	elseif random_number >= 0.75 and random_number < 0.85 then
-		fish_rarity = 3 -- rare
-	elseif random_number >= 0.85 and random_number < 0.95 then
-		fish_rarity = 4 -- epic
-	else
-		endfish_rarity = 5 --legendary
+function G.catch_fish(pond)
+	return table.remove(pond, 1) -- remove and return the first fish from the pond and update the table
+end
+
+function G.make_pond(amount_of_fish_in_pond)
+	local pond = {}
+
+	for i = 1, amount_of_fish_in_pond do
+		local rarity = MATH_HELPERS.round(RNG:randomNormal(1, 1)) -- adjust distribution eventually
+		rarity = math.max(1, math.min(rarity, 4))
+		pond[i] = FISH:new(rarity)
 	end
-	-- print(fish_rarity)
+	return pond
+end
 
-	local caught_fish = fish:new(fish_rarity)
-
-	print(caught_fish.name)
-
-	return caught_fish
+function G.count_rarity(pond, rarity)
+	local number_of_fish = 0
+	for _, fish in ipairs(pond) do
+		if fish.rarity == rarity then
+			number_of_fish = number_of_fish + 1
+		end
+	end
+	return number_of_fish
 end
 
 return G

@@ -9,7 +9,6 @@ function get_fish_of_rarity(rarity)
 			valid_fish[#valid_fish + 1] = fish_type -- Add the fish at the next free index (#tablename is the length of table)
 		end
 	end
-
 	return valid_fish
 end
 
