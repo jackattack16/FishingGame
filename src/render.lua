@@ -2,7 +2,7 @@ local math_helpers = require("src.math_helpers")
 local R = {}
 
 function R.draw_catching()
-	love.graphics.print("Caught Fish", 5, 5)
+	love.graphics.print("Caught Fish: " .. #game_state.fish_caught_this_round .. " / 5", 5, 5)
 	fish_sprite_batch:clear()
 	local i = 0
 	for _, fish in pairs(game_state.fish_caught_this_round) do
@@ -22,6 +22,8 @@ function R.draw_catching()
 	love.graphics.draw(fish_sprite_batch, 0, 0)
 
 	love.graphics.print("Bait Left: " .. game_state.bait_left, 150, 5)
+
+	love.graphics.print(game_state.status_text, 5, 256)
 end
 
 function R.draw_shop()

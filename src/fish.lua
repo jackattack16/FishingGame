@@ -37,7 +37,8 @@ function Fish:new(rarity)
 		rarity = chosen_fish.rarity,
 	}
 
-	fish.price = math_helpers.round((fish.weight * fish.multiplier) + chosen_fish.base_price, 2)
+	fish.price =
+		math_helpers.round((fish.weight * fish.multiplier) + (chosen_fish.base_price * (chosen_fish.rarity / 2)), 2)
 
 	setmetatable(fish, Fish)
 	return fish

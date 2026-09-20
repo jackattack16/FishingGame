@@ -17,6 +17,7 @@ function love.load()
 	game_state.fish_released_this_round = {}
 	game_state.bait_left = 5
 	game_state.state = "catching"
+	game_state.status_text = "press space to catch a fish"
 
 	local sprite_sheet = love.graphics.newImage("assets/sprites/common_fish.png")
 	fish_sprite_batch = love.graphics.newSpriteBatch(sprite_sheet)
@@ -34,9 +35,18 @@ function love.update(dt) end
 
 function love.keypressed(key, scancode, isrepeat)
 	if key == "space" then
-		if not game_state.current_fish and #game_state.pond > 0 and game_state.bait_left > 0 then
+		if
+			not game_state.current_fish
+			and #game_state.pond > 0
+			and game_state.bait_left > 0
+			and #game_state.fish_caught_this_round < 5
+		then
 			game_state.current_fish, game_state.bait_left = game.catch_fish(game_state.pond)
-			print("you caught a " .. game_state.current_fish.name .. " \n Do you wnat to keep it? (Y/n)")
+			game_state.status_text = (
+				"You caught a "
+				.. game_state.current_fish.name
+				.. "!\nDo you wnat to keep it? (Y/n)"
+			)
 		elseif #game_state.pond == 0 then
 			print("You lost :(")
 		elseif game_state.bait_left == 0 then
@@ -46,11 +56,12 @@ function love.keypressed(key, scancode, isrepeat)
 
 	if key == "y" then
 		if game_state.current_fish then
-			print("Fish caught!")
+			-- print("Fish caught!")
 			game_state.fish_caught_this_round[#game_state.fish_caught_this_round + 1] = game_state.current_fish
 		end
 
 		game_state.current_fish = false
+		game_state.status_text = "Press space to catch a fish"
 		if game_state.bait_left == 0 then
 			game_state.state = "shop"
 		end
@@ -58,11 +69,12 @@ function love.keypressed(key, scancode, isrepeat)
 
 	if key == "n" then
 		if game_state.current_fish then
-			print("Fish released!")
+			-- print("Fish released!")
 			game_state.fish_released_this_round[#game_state.fish_released_this_round + 1] = game_state.current_fish
 		end
 
 		game_state.current_fish = false
+		game_state.status_text = "Press space to catch a fish"
 		if game_state.bait_left == 0 then
 			game_state.state = "shop"
 		end
