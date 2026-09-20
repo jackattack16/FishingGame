@@ -1,0 +1,9 @@
+function love.conf(t)
+	t.window = nil
+	t.modules.graphics = false
+	t.modules.audio = false
+	t.modules.joystick = false
+	t.modules.physics = false
+	t.modules.sound = false
+	t.modules.video = false
+end

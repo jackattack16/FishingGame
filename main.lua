@@ -9,7 +9,7 @@ end
 function love.load()
 	love.window.setMode(700, 300, { x = 300, y = 100 })
 	RNG = love.math.newRandomGenerator() -- create  a global rng machine
-	RNG:setSeed(1000) -- set the seed so runs can be reproduced in the future
+	RNG:setSeed(os.time()) -- use a fresh seed each time the game starts
 
 	game_state.pond = game.make_pond(50)
 	game_state.current_fish = false
