@@ -1,4 +1,5 @@
 local game = require("src.game_functions")
+local render = require("src.render")
 
 game_state = {}
 
@@ -14,11 +15,11 @@ function love.load()
 	game_state.current_fish = false
 	game_state.fish_caught_this_round = {}
 	game_state.fish_released_this_round = {}
-	game_state.bait_left = 10
+	game_state.bait_left = 5
+	game_state.state = "catching"
 
 	local sprite_sheet = love.graphics.newImage("assets/sprites/common_fish.png")
 	fish_sprite_batch = love.graphics.newSpriteBatch(sprite_sheet)
-
 	FISH_TEXTURES = {}
 
 	for _, fish in pairs(FishTypes) do
@@ -35,7 +36,6 @@ function love.keypressed(key, scancode, isrepeat)
 	if key == "space" then
 		if not game_state.current_fish and #game_state.pond > 0 and game_state.bait_left > 0 then
 			game_state.current_fish, game_state.bait_left = game.catch_fish(game_state.pond)
-
 			print("you caught a " .. game_state.current_fish.name .. " \n Do you wnat to keep it? (Y/n)")
 		elseif #game_state.pond == 0 then
 			print("You lost :(")
@@ -49,7 +49,11 @@ function love.keypressed(key, scancode, isrepeat)
 			print("Fish caught!")
 			game_state.fish_caught_this_round[#game_state.fish_caught_this_round + 1] = game_state.current_fish
 		end
+
 		game_state.current_fish = false
+		if game_state.bait_left == 0 then
+			game_state.state = "shop"
+		end
 	end
 
 	if key == "n" then
@@ -57,30 +61,18 @@ function love.keypressed(key, scancode, isrepeat)
 			print("Fish released!")
 			game_state.fish_released_this_round[#game_state.fish_released_this_round + 1] = game_state.current_fish
 		end
+
 		game_state.current_fish = false
+		if game_state.bait_left == 0 then
+			game_state.state = "shop"
+		end
 	end
 end
 
 function love.draw()
-	love.graphics.print("Caught Fish", 5, 5)
-
-	fish_sprite_batch:clear()
-	local i = 0
-	for _, fish in pairs(game_state.fish_caught_this_round) do
-		fish_sprite_batch:add(FISH_TEXTURES[fish.sprite_index], 0 + (i * 128), 10)
-		i = i + 1
+	if game_state.state == "catching" then
+		render.draw_catching()
+	elseif game_state.state == "shop" then
+		render.draw_shop()
 	end
-	love.graphics.draw(fish_sprite_batch, 0, 0)
-
-	love.graphics.print("Released Fish", 5, 143)
-
-	fish_sprite_batch:clear()
-	local i = 0
-	for _, fish in pairs(game_state.fish_released_this_round) do
-		fish_sprite_batch:add(FISH_TEXTURES[fish.sprite_index], 0 + (i * 128), 148)
-		i = i + 1
-	end
-	love.graphics.draw(fish_sprite_batch, 0, 0)
-
-	love.graphics.print("Bait Left: " .. game_state.bait_left, 150, 5)
 end

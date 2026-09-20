@@ -1,3 +1,4 @@
+local math_helpers = require("src.math_helpers")
 Fish = {}
 
 Fish.__index = Fish
@@ -32,10 +33,11 @@ function Fish:new(rarity)
 		length = length,
 		girth = girth,
 		weight = (length * girth * girth) / chosen_fish.factor,
-		base_price = chosen_fish.base_price,
 		multiplier = chosen_fish.multiplier,
 		rarity = chosen_fish.rarity,
 	}
+
+	fish.price = math_helpers.round((fish.weight * fish.multiplier) + chosen_fish.base_price, 2)
 
 	setmetatable(fish, Fish)
 	return fish
