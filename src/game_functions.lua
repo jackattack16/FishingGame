@@ -4,7 +4,7 @@ local MATH_HELPERS = require("src.math_helpers")
 local G = {}
 
 function G.catch_fish(pond)
-	return table.remove(pond, 1) -- remove and return the first fish from the pond and update the table
+	return table.remove(pond, 1), game_state.bait_left - 1 -- remove and return the first fish from the pond and update the table
 end
 
 function G.make_pond(amount_of_fish_in_pond)
