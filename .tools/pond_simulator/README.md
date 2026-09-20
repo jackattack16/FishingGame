@@ -3,7 +3,7 @@
 From the repository root in PowerShell, run:
 
 ```powershell
-& 'C:\Program Files\LOVE\lovec.exe' .\tools\pond_simulator 1000 pond_simulation.csv
+& 'C:\Program Files\LOVE\lovec.exe' .\.tools\pond_simulator 1000 pond_simulation.csv
 ```
 
 Arguments are the number of ponds, output CSV path, and optional random seed. The defaults are `1000`, `pond_simulation.csv`, and the current time. Each run creates a fresh 50-fish pond and catches the first five fish using the game's own functions. The seed is saved in the final CSV row, so passing it as the third argument reproduces that run. The output file is overwritten on each run.

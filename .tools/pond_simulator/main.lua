@@ -1,5 +1,5 @@
 -- Run from the repository root:
--- & 'C:\Program Files\LOVE\lovec.exe' .\tools\pond_simulator 1000 pond_simulation.csv
+-- & 'C:\Program Files\LOVE\lovec.exe' .\.tools\pond_simulator 1000 pond_simulation.csv
 -- Arguments: number of runs, output CSV path, optional random seed.
 
 local function positive_integer(value, label)
@@ -31,8 +31,7 @@ function love.load(args)
 	package.path = root .. "/?.lua;" .. package.path
 	local game = require("src.game_functions")
 
-	RNG = love.math.newRandomGenerator(seed)
-	game_state = {}
+	local rng = love.math.newRandomGenerator(seed)
 
 	local file, open_error = io.open(output_path, "w")
 	assert(file, "Could not open CSV: " .. tostring(open_error))
@@ -47,7 +46,7 @@ function love.load(args)
 	local pond_value_sum = 0
 
 	for run = 1, runs do
-		local pond = game.make_pond(50)
+		local pond = game.make_pond(50, rng)
 		local original_pond = { unpack(pond) }
 		local caught_order = {}
 		local pond_total_value = 0
@@ -58,12 +57,12 @@ function love.load(args)
 		pond_value_max = math.max(pond_value_max, pond_total_value)
 		pond_value_sum = pond_value_sum + pond_total_value
 
-		game_state.bait_left = 5
+		local bait_left = 5
 		local caught_total_value = 0
 
 		for draw = 1, 5 do
 			local fish
-			fish, game_state.bait_left = game.catch_fish(pond)
+			fish, bait_left = game.catch_fish(pond, bait_left)
 			caught_order[fish] = draw
 			caught_total_value = caught_total_value + fish.price
 		end

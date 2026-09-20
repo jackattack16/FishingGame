@@ -1,34 +1,18 @@
 local game = require("src.game_functions")
 local render = require("src.render")
-
-game_state = {}
+local game_state = require("src.globals.globals")
+local rng
 
 if os.getenv("LOVE2D_TOOLS") then
 	pcall(require, "_love2d_tools_bridge")
 end
 function love.load()
 	love.window.setMode(700, 300, { x = 300, y = 100 })
-	RNG = love.math.newRandomGenerator() -- create  a global rng machine
-	RNG:setSeed(os.time()) -- use a fresh seed each time the game starts
+	rng = love.math.newRandomGenerator()
+	rng:setSeed(os.time()) -- use a fresh seed each time the game starts
 
-	game_state.pond = game.make_pond(50)
-	game_state.current_fish = false
-	game_state.fish_caught_this_round = {}
-	game_state.fish_released_this_round = {}
-	game_state.bait_left = 5
-	game_state.state = "catching"
-	game_state.status_text = "press space to catch a fish"
-
-	local sprite_sheet = love.graphics.newImage("assets/sprites/common_fish.png")
-	fish_sprite_batch = love.graphics.newSpriteBatch(sprite_sheet)
-	FISH_TEXTURES = {}
-
-	for _, fish in pairs(FishTypes) do
-		local x_pos = 0 + ((fish.sprite_index - 1) * 128)
-		local y_pos = 0 -- update to use rarity to index for sprites when i get more textures
-		local index = fish.sprite_index
-		FISH_TEXTURES[index] = love.graphics.newQuad(x_pos, y_pos, 128, 128, sprite_sheet)
-	end
+	game_state.pond = game.make_pond(50, rng)
+	render.load()
 end
 
 function love.update(dt) end
@@ -41,7 +25,7 @@ function love.keypressed(key, scancode, isrepeat)
 			and game_state.bait_left > 0
 			and #game_state.fish_caught_this_round < 5
 		then
-			game_state.current_fish, game_state.bait_left = game.catch_fish(game_state.pond)
+			game_state.current_fish, game_state.bait_left = game.catch_fish(game_state.pond, game_state.bait_left)
 			game_state.status_text = (
 				"You caught a "
 				.. game_state.current_fish.name
@@ -77,6 +61,12 @@ function love.keypressed(key, scancode, isrepeat)
 		game_state.status_text = "Press space to catch a fish"
 		if game_state.bait_left == 0 then
 			game_state.state = "shop"
+		end
+	end
+
+	if key == "return" then
+		if game_state.state == "shop" then
+			game.end_round(rng)
 		end
 	end
 end
