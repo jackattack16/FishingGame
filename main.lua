@@ -77,4 +77,6 @@ function love.draw()
 	elseif game_state.state == "shop" then
 		render.draw_shop()
 	end
+
+	love.graphics.print("Money: " .. game_state.money, 480, 5)
 end
