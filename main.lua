@@ -2,6 +2,7 @@ local game = require("src.game_functions")
 local render = require("src.render")
 local game_state = require("src.globals.globals")
 local rng
+local container = require("src.ui.container")
 
 if os.getenv("LOVE2D_TOOLS") then
 	pcall(require, "_love2d_tools_bridge")
@@ -13,6 +14,18 @@ function love.load()
 
 	game_state.pond = game.make_pond(50, rng)
 	render.load()
+	button_container = container:new(0, 0, 200, 500, 0, 0, "column", "together")
+	button_container:add_element(
+		"button",
+		{
+			width = "fit",
+			height = "fit",
+			x_padding = 5,
+			y_padding = 5,
+			horizontal_text_align = "center",
+			vertical_text_align = "center",
+		}
+	)
 end
 
 function love.update(dt) end
@@ -79,4 +92,5 @@ function love.draw()
 	end
 
 	love.graphics.print("Money: " .. game_state.money, 480, 5)
+	button_container:render()
 end
