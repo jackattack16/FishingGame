@@ -8,24 +8,21 @@ if os.getenv("LOVE2D_TOOLS") then
 	pcall(require, "_love2d_tools_bridge")
 end
 function love.load()
-	love.window.setMode(700, 300, { x = 300, y = 100 })
 	rng = love.math.newRandomGenerator()
 	rng:setSeed(os.time()) -- use a fresh seed each time the game starts
 
 	game_state.pond = game.make_pond(50, rng)
 	render.load()
-	button_container = container:new(0, 0, 200, 500, 0, 0, "column", "together")
-	button_container:add_element(
-		"button",
-		{
-			width = "fit",
-			height = "fit",
-			x_padding = 5,
-			y_padding = 5,
-			horizontal_text_align = "center",
-			vertical_text_align = "center",
-		}
-	)
+	button_container = container:new(0, 0, 200, 500, 0, 0, "column", "evenly")
+	button_container:add_element("button", {
+		width = "fit",
+		height = "fit",
+		x_padding = 5,
+		y_padding = 5,
+		horizontal_text_align = "center",
+		vertical_text_align = "center",
+		text = "button1",
+	})
 end
 
 function love.update(dt) end

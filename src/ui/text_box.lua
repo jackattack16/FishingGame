@@ -1,23 +1,21 @@
-local Button = {}
-Button.__index = Button
+local Text_Box = {}
+Text_Box.__index = Text_Box
 
 ---@param parent Container
 ---@param width number | "fit"
 ---@param height number | "fit"
 ---@param text string
----@param on_click function
 ---@param x_padding number
 ---@param y_padding number
 ---@param horizontal_text_align "center" | "none"
 ---@param vertical_text_align "center" | "none"
 ---@param style? {bg_color?: number[], text_color?: number[], radius?: number}
----@return Button
-function Button:new(
+---@return Text_Box
+function Text_Box:new(
 	parent,
 	width,
 	height,
 	text,
-	on_click,
 	x_padding,
 	y_padding,
 	horizontal_text_align,
@@ -79,30 +77,4 @@ function Button:new(
 	return new_button
 end
 
-local default_onclick = function()
-	print("no function supplied")
-end
-
-function Button.get_defaults()
-	return {
-		width = "fit",
-		height = "fit",
-		text = "Text goes here",
-		on_click = default_onclick,
-		x_padding = 0,
-		y_padding = 0,
-		horizontal_text_align = "none",
-		vertical_text_align = "none",
-	}
-end
-
-function Button:render(x, y)
-	local old_r, old_g, old_b, old_a = love.graphics.getColor()
-	love.graphics.setColor(self.bg_color[1], self.bg_color[2], self.bg_color[3], self.bg_color[4] or 1)
-	love.graphics.rectangle("fill", x, y, self.width, self.height, self.radius, self.radius)
-	love.graphics.setColor(self.text_color[1], self.text_color[2], self.text_color[3], self.text_color[4] or 1)
-	love.graphics.draw(self.text, x + self.text_x_offset, y + self.text_y_offset)
-	love.graphics.setColor(old_r, old_g, old_b, old_a)
-end
-
-return Button
+return Text_Box
