@@ -1,4 +1,5 @@
 local BUTTON = require("src.ui.button")
+local TEXT_BOX = require("src.ui.text_box")
 local Container = {}
 Container.__index = Container
 
@@ -99,8 +100,8 @@ function Container:new(x, y, width, height, x_padding, y_padding, display_direct
 	return new_container
 end
 
----Add a button to this container.
----@param component_type "button"
+---Add a button or text box to this container.
+---@param component_type "button" | "textbox"
 ---@param parameters? {width?: number | "fit", height?: number | "fit", text?: string, on_click?: function, x_padding?: number, y_padding?: number, horizontal_text_align?: "center" | "none", vertical_text_align?: "center" | "none", bg_color?: number[], text_color?: number[], radius?: number, border_color?: number[], border_width?: number}
 function Container:add_element(component_type, parameters)
 	local new_element
@@ -121,6 +122,23 @@ function Container:add_element(component_type, parameters)
 			button_paramaters.horizontal_text_align,
 			button_paramaters.vertical_text_align,
 			button_paramaters
+		)
+	elseif component_type == "textbox" then
+		local text_box_paramaters = TEXT_BOX.get_defaults()
+		for key, value in pairs(parameters or {}) do
+			text_box_paramaters[key] = value
+		end
+		new_element = TEXT_BOX:new(
+			self,
+			text_box_paramaters.has_on_click,
+			text_box_paramaters.width,
+			text_box_paramaters.height,
+			text_box_paramaters.text,
+			text_box_paramaters.x_padding,
+			text_box_paramaters.y_padding,
+			text_box_paramaters.horizontal_text_align,
+			text_box_paramaters.vertical_text_align,
+			text_box_paramaters
 		)
 
 	end

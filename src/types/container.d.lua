@@ -24,8 +24,8 @@
 ---@field layout fun(self: Container) Calculates child positions after layout properties change
 local Container = {}
 
----Add a button to this container.
----@param component_type "button" Element to add.
+---Add a button or text box to this container.
+---@param component_type "button" | "textbox" Element to add.
 ---@param parameters? {width?: number | "fit", height?: number | "fit", text?: string, on_click?: function, x_padding?: number, y_padding?: number, horizontal_text_align?: "center" | "none", vertical_text_align?: "center" | "none", bg_color?: number[], text_color?: number[], radius?: number, border_color?: number[], border_width?: number}
 function Container:add_element(component_type, parameters) end
 
