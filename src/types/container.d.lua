@@ -24,9 +24,9 @@
 ---@field layout fun(self: Container) Calculates child positions after layout properties change
 local Container = {}
 
----Add a button, text box, or spacer. Spacer requires width and height as percentages of the container.
----@param component_type "button" | "textbox" | "spacer" Element to add.
----@param parameters? {width?: number | "fit", height?: number | "fit", text?: string, on_click?: function, x_padding?: number, y_padding?: number, horizontal_text_align?: "center" | "none", vertical_text_align?: "center" | "none", bg_color?: number[], text_color?: number[], radius?: number, border_color?: number[], border_width?: number}
+---Add a button, text box, spacer, or image. For a sprite, pass its sheet as image and its Quad as quad. Image sizes default to "fit" (source pixels); numeric sizes are percentages of the container.
+---@param component_type "button" | "textbox" | "spacer" | "image" Element to add.
+---@param parameters? {width?: number | "fit", height?: number | "fit", text?: string, on_click?: function, x_padding?: number, y_padding?: number, horizontal_text_align?: "center" | "none", vertical_text_align?: "center" | "none", bg_color?: number[], text_color?: number[], radius?: number, border_color?: number[], border_width?: number, image?: love.Image, quad?: love.Quad} Image requires image; quad selects one sprite. Spacer requires width and height. Border width is in pixels; zero hides the border.
 function Container:add_element(component_type, parameters) end
 
 ---Check for any click of the child elements
