@@ -87,7 +87,7 @@ function Container:new(x, y, width, height, x_padding, y_padding, display_direct
 		y_padding = y_padding,
 		display_direction = display_direction,
 		spacing = spacing,
-		bg_color = style.bg_color or { 0.847, 0.024, 0.024, 1 },
+		bg_color = style.bg_color or { 0, 0, 0, 0 },
 		text_color = style.text_color or { 0, 0, 0, 1 },
 		radius = style.radius or 0,
 		wrap = style.wrap or false,
@@ -146,7 +146,10 @@ function Container:add_element(component_type, parameters)
 		local spacer_width = parameters and parameters.width
 		local spacer_height = parameters and parameters.height
 		assert(
-			type(spacer_width) == "number" and type(spacer_height) == "number" and spacer_width >= 0 and spacer_height >= 0,
+			type(spacer_width) == "number"
+			and type(spacer_height) == "number"
+				and spacer_width >= 0
+				and spacer_height >= 0,
 			"Spacer width and height must be nonnegative percentages of the container"
 		)
 		new_element = SPACER:new((spacer_width / 100) * self.width, (spacer_height / 100) * self.height)

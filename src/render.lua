@@ -4,7 +4,7 @@ local game_state = require("src.globals.globals")
 local fish_species = require("src.fish_species")
 local R = {}
 local fish_sprite_batch
-local fish_textures = {}
+FISH_TEXTURES = {}
 
 function R.load()
 	local sprite_sheet = love.graphics.newImage("assets/sprites/common_fish.png")
@@ -12,14 +12,14 @@ function R.load()
 	for _, fish in pairs(fish_species) do
 		local x_pos = (fish.sprite_index - 1) * 128
 		local y_pos = 0 -- update to use rarity to index for sprites when i get more textures
-		fish_textures[fish.sprite_index] = love.graphics.newQuad(x_pos, y_pos, 128, 128, sprite_sheet)
+		FISH_TEXTURES[fish.sprite_index] = love.graphics.newQuad(x_pos, y_pos, 128, 128, sprite_sheet)
 	end
 end
 
 local function make_fish_batch(fish_table, x_start, y_start, sprite_width)
 	local i = 0
 	for _, fish in pairs(fish_table) do
-		fish_sprite_batch:add(fish_textures[fish.sprite_index], x_start + (i * sprite_width), y_start)
+		fish_sprite_batch:add(FISH_TEXTURES[fish.sprite_index], x_start + (i * sprite_width), y_start)
 		i = i + 1
 	end
 end
@@ -50,7 +50,7 @@ function R.draw_shop()
 	local i = 0
 	for _, fish in pairs(game_state.fish_caught_this_round) do
 		local x_offset = i * 128
-		fish_sprite_batch:add(fish_textures[fish.sprite_index], x_offset, 10)
+		fish_sprite_batch:add(FISH_TEXTURES[fish.sprite_index], x_offset, 10)
 		love.graphics.print("$" .. fish.price, 64 + x_offset, 138)
 		love.graphics.print(math_helpers.round(fish.weight, 2) .. "kg", 64 + x_offset, 153)
 		love.graphics.print(math_helpers.round(fish.length, 2) .. "cm", 64 + x_offset, 168)
@@ -67,6 +67,21 @@ function R.draw_shop()
 		2,
 		2
 	)
+end
+
+function R.render_game()
+	local width, height = love.graphics.getDimensions()
+	love.graphics.setShader(water_shader)
+
+	love.graphics.rectangle("fill", 0, 0, width, height)
+	love.graphics.setShader()
+
+	love.graphics.setColor({ 0.063, 0.208, 0.478, 0.25 })
+	love.graphics.rectangle("fill", 0, 0, width, height)
+	love.graphics.setColor({ 1, 1, 1, 1 })
+	love.graphics.draw(particle_system, -15, 0)
+	left_bar:render()
+	bottom_bar:render()
 end
 
 return R
