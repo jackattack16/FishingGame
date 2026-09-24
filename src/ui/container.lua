@@ -1,5 +1,6 @@
 local BUTTON = require("src.ui.button")
 local TEXT_BOX = require("src.ui.text_box")
+local SPACER = require("src.ui.spacer")
 local Container = {}
 Container.__index = Container
 
@@ -100,8 +101,8 @@ function Container:new(x, y, width, height, x_padding, y_padding, display_direct
 	return new_container
 end
 
----Add a button or text box to this container.
----@param component_type "button" | "textbox"
+---Add a button, text box, or invisible spacer. Spacer width and height are required percentages of this container.
+---@param component_type "button" | "textbox" | "spacer"
 ---@param parameters? {width?: number | "fit", height?: number | "fit", text?: string, on_click?: function, x_padding?: number, y_padding?: number, horizontal_text_align?: "center" | "none", vertical_text_align?: "center" | "none", bg_color?: number[], text_color?: number[], radius?: number, border_color?: number[], border_width?: number}
 function Container:add_element(component_type, parameters)
 	local new_element
@@ -140,6 +141,14 @@ function Container:add_element(component_type, parameters)
 			text_box_paramaters.vertical_text_align,
 			text_box_paramaters
 		)
+	elseif component_type == "spacer" then
+		local spacer_width = parameters and parameters.width
+		local spacer_height = parameters and parameters.height
+		assert(
+			type(spacer_width) == "number" and type(spacer_height) == "number" and spacer_width >= 0 and spacer_height >= 0,
+			"Spacer width and height must be nonnegative percentages of the container"
+		)
+		new_element = SPACER:new((spacer_width / 100) * self.width, (spacer_height / 100) * self.height)
 
 	end
 
