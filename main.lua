@@ -8,24 +8,54 @@ if os.getenv("LOVE2D_TOOLS") then
 	pcall(require, "_love2d_tools_bridge")
 end
 function love.load()
+	love.window.maximize()
 	rng = love.math.newRandomGenerator()
 	rng:setSeed(os.time()) -- use a fresh seed each time the game starts
 
 	game_state.pond = game.make_pond(50, rng)
 	render.load()
-	button_container = container:new(0, 0, 200, 500, 0, 0, "column", "evenly")
-	button_container:add_element("button", {
-		width = "fit",
-		height = "fit",
-		x_padding = 5,
+	left_bar = container:new(
+		0,
+		0,
+		"10%",
+		"85%",
+		0,
+		0,
+		"column",
+		"between",
+		{ wrap = true, gap = 10, bg_color = { 1, 0, 0, 1 } }
+	)
+
+	left_bar:add_element("textbox", {
+		text = "Money",
+		width = 100,
 		y_padding = 5,
-		horizontal_text_align = "center",
-		vertical_text_align = "center",
-		text = "button1",
+	})
+	bottom_bar = container:new(
+		0,
+		"85%",
+		"full",
+		"15%",
+		0,
+		0,
+		"row",
+		"together",
+		{ wrap = true, gap = 10, bg_color = { 0, 1, 0, 1 } }
+	)
+	bottom_bar:add_element("button", {
+		text = "Settings",
+		bg_color = { 0.2, 0.2, 0.2 },
+		height = 100,
+		width = 10,
 	})
 end
 
-function love.update(dt) end
+function love.mousepressed(x, y, mouse_button) end
+
+function love.resize()
+	left_bar:layout()
+	bottom_bar:layout()
+end
 
 function love.keypressed(key, scancode, isrepeat)
 	if key == "space" then
@@ -82,12 +112,6 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.draw()
-	if game_state.state == "catching" then
-		render.draw_catching()
-	elseif game_state.state == "shop" then
-		render.draw_shop()
-	end
-
-	love.graphics.print("Money: " .. game_state.money, 480, 5)
-	button_container:render()
+	left_bar:render()
+	bottom_bar:render()
 end

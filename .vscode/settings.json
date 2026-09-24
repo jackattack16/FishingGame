@@ -15,5 +15,6 @@
   "[lua]": {
     "editor.defaultFormatter": "JohnnyMorganz.stylua",
     "editor.formatOnSave": true
-  }
+  },
+  "workbench.colorTheme": "Dark Modern + 2026"
 }
