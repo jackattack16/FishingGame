@@ -4,6 +4,8 @@ local game_state = require("src.globals.globals")
 local fish_species = require("src.fish_species")
 local R = {}
 local fish_sprite_batch
+local algae_canvas
+local second_algae_canvas
 FISH_TEXTURES = {}
 
 function R.load()
@@ -14,6 +16,24 @@ function R.load()
 		local y_pos = 0 -- update to use rarity to index for sprites when i get more textures
 		FISH_TEXTURES[fish.sprite_index] = love.graphics.newQuad(x_pos, y_pos, 128, 128, sprite_sheet)
 	end
+	R.resize()
+end
+
+function R.resize()
+	local width, height = love.graphics.getDimensions()
+	algae_canvas = love.graphics.newCanvas()
+	second_algae_canvas = love.graphics.newCanvas()
+
+	love.graphics.push("all")
+	love.graphics.setCanvas(algae_canvas)
+	love.graphics.clear(0, 0, 0, 0)
+	love.graphics.setColor({ 0.043, 0.251, 0.129 })
+	love.graphics.setLineWidth(10)
+	love.graphics.line(width * 0.2, height, width * 0.2, height * 0.75)
+	love.graphics.line(width * 0.4, height, width * 0.4, height * 0.5)
+	love.graphics.line(width * 0.7, height, width * 0.7, height * 0.8)
+	love.graphics.line(width * 0.9, height, width * 0.9, height * 0.6)
+	love.graphics.pop()
 end
 
 local function make_fish_batch(fish_table, x_start, y_start, sprite_width)
@@ -71,15 +91,27 @@ end
 
 function R.render_game()
 	local width, height = love.graphics.getDimensions()
-	love.graphics.setShader(water_shader)
 
+	love.graphics.setColor({ 1, 1, 1, 1 })
+	love.graphics.setShader(water_shader)
 	love.graphics.rectangle("fill", 0, 0, width, height)
 	love.graphics.setShader()
 
 	love.graphics.setColor({ 0.063, 0.208, 0.478, 0.25 })
 	love.graphics.rectangle("fill", 0, 0, width, height)
-	love.graphics.setColor({ 1, 1, 1, 1 })
 	love.graphics.draw(particle_system, -15, 0)
+
+	love.graphics.setCanvas(second_algae_canvas)
+	love.graphics.clear(0, 0, 0, 0)
+	love.graphics.setColor({ 1, 1, 1, 1 })
+	love.graphics.setShader(distort_shader)
+	love.graphics.draw(algae_canvas, 0, 0)
+	love.graphics.setShader()
+	love.graphics.setCanvas()
+
+	love.graphics.setShader(pixelate_shader)
+	love.graphics.draw(second_algae_canvas, 0, 0)
+	love.graphics.setShader()
 	left_bar:render()
 	bottom_bar:render()
 end

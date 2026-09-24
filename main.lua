@@ -8,6 +8,7 @@ local elapsed = 0
 if os.getenv("LOVE2D_TOOLS") then
 	pcall(require, "_love2d_tools_bridge")
 end
+
 function love.load()
 	love.window.maximize()
 	rng = love.math.newRandomGenerator()
@@ -51,6 +52,9 @@ function love.load()
 		width = 10,
 	})
 	water_shader = love.graphics.newShader("src/shaders/water.frag")
+	distort_shader = love.graphics.newShader("src/shaders/distort.frag")
+	pixelate_shader = love.graphics.newShader("src/shaders/pixelate.frag")
+	grain_shader = love.graphics.newShader("src/shaders/grain.frag")
 
 	local particle_image = love.graphics.newImage("assets/sprites/fish_particle.png")
 	particle_system = love.graphics.newParticleSystem(particle_image, 100)
@@ -72,6 +76,7 @@ function love.update(dt)
 end
 
 function love.resize()
+	render.resize()
 	left_bar:layout()
 	bottom_bar:layout()
 end
@@ -134,6 +139,8 @@ function love.draw()
 	local pixel_width, pixel_height = love.graphics.getPixelDimensions()
 	water_shader:send("u_resolution", { pixel_width, pixel_height })
 	water_shader:send("u_time", elapsed)
+	distort_shader:send("u_time", elapsed)
+	grain_shader:send("u_time", elapsed)
 
 	render.render_game()
 end
