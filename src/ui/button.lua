@@ -1,7 +1,9 @@
-local Button = {}
+local Element = require("src.ui.element")
+local Button = setmetatable({}, { __index = Element })
 Button.__index = Button
 
 ---@param parent Container
+---@param has_on_click boolean
 ---@param width number | "fit"
 ---@param height number | "fit"
 ---@param text string
@@ -10,10 +12,11 @@ Button.__index = Button
 ---@param y_padding number
 ---@param horizontal_text_align "center" | "none"
 ---@param vertical_text_align "center" | "none"
----@param style? {bg_color?: number[], text_color?: number[], radius?: number}
+---@param style? {bg_color?: number[], text_color?: number[], radius?: number, border_color?: number[], border_width?: number}
 ---@return Button
 function Button:new(
 	parent,
+	has_on_click,
 	width,
 	height,
 	text,
@@ -24,58 +27,20 @@ function Button:new(
 	vertical_text_align,
 	style
 )
-	style = style or {}
-	x_padding = (x_padding / 100) * parent.width
-	y_padding = (y_padding / 100) * parent.height
-
-	local created_text = love.graphics.newText(love.graphics.getFont(), text)
-	local text_width = created_text:getWidth()
-	local text_height = created_text:getHeight()
-
-	local calculated_width
-	if width == "fit" then
-		calculated_width = text_width + (x_padding * 2)
-	else
-		calculated_width = (width / 100) * parent.width
-	end
-
-	local calculated_height
-	if height == "fit" then
-		calculated_height = text_height + (y_padding * 2)
-	else
-		calculated_height = (height / 100) * parent.height
-	end
-
-	local calculated_text_x_offset = 0
-	if horizontal_text_align == "center" then
-		if calculated_width > text_width then
-			local remaining_width = calculated_width - text_width
-			calculated_text_x_offset = remaining_width / 2
-		end
-	end
-
-	local calculated_text_y_offset = 0
-	if vertical_text_align == "center" then
-		if calculated_height > text_height then
-			local remaining_height = calculated_height - text_height
-			calculated_text_y_offset = remaining_height / 2
-		end
-	end
-
-	local new_button = {
-		width = calculated_width,
-		height = calculated_height,
-		on_click = on_click,
-		text = created_text,
-		text_x_offset = calculated_text_x_offset,
-		text_y_offset = calculated_text_y_offset,
-		bg_color = style.bg_color or { 1, 1, 1, 1 },
-		text_color = style.text_color or parent.text_color or { 0, 0, 0, 1 },
-		radius = style.radius or 0,
-	}
-
-	setmetatable(new_button, Button)
-
+	local new_button = Element.new(
+		self,
+		parent,
+		has_on_click,
+		width,
+		height,
+		text,
+		x_padding,
+		y_padding,
+		horizontal_text_align,
+		vertical_text_align,
+		style
+	)
+	new_button.on_click = on_click
 	return new_button
 end
 
@@ -84,25 +49,11 @@ local default_onclick = function()
 end
 
 function Button.get_defaults()
-	return {
-		width = "fit",
-		height = "fit",
-		text = "Text goes here",
-		on_click = default_onclick,
-		x_padding = 0,
-		y_padding = 0,
-		horizontal_text_align = "none",
-		vertical_text_align = "none",
-	}
-end
-
-function Button:render(x, y)
-	local old_r, old_g, old_b, old_a = love.graphics.getColor()
-	love.graphics.setColor(self.bg_color[1], self.bg_color[2], self.bg_color[3], self.bg_color[4] or 1)
-	love.graphics.rectangle("fill", x, y, self.width, self.height, self.radius, self.radius)
-	love.graphics.setColor(self.text_color[1], self.text_color[2], self.text_color[3], self.text_color[4] or 1)
-	love.graphics.draw(self.text, x + self.text_x_offset, y + self.text_y_offset)
-	love.graphics.setColor(old_r, old_g, old_b, old_a)
+	local defaults = Element.get_defaults()
+	defaults.on_click = default_onclick
+	defaults.has_on_click = true
+	defaults.border_width = 4
+	return defaults
 end
 
 return Button
