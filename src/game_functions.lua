@@ -29,10 +29,9 @@ end
 ---@param pond Fish[]
 ---@param bait_left integer
 ---@return Fish
----@return number
 function G.catch_fish(pond, bait_left)
 	local fish = assert(table.remove(pond, 1), "Cannot catch a fish from an empty pond")
-	return fish, bait_left - 1
+	return fish
 end
 
 ---@param amount_of_fish_in_pond integer

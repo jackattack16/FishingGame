@@ -4,6 +4,7 @@ local game_state = require("src.globals.globals")
 local rng
 local container = require("src.ui.container")
 local elapsed = 0
+local fishing_line = require("src.fishing_line")
 
 if os.getenv("LOVE2D_TOOLS") then
 	pcall(require, "_love2d_tools_bridge")
@@ -25,14 +26,45 @@ function love.load()
 		10,
 		10,
 		"column",
-		"between",
-		{ wrap = true, gap = 10, bg_color = { 0, 0, 0, 0.5 } }
+		"together",
+		{ wrap = true, gap = 2, bg_color = { 0, 0, 0, 0.5 } }
 	)
 
 	left_bar:add_element("textbox", {
-		text = "Money",
+		text = "Money: $${money}$",
+		width = 100,
+		bg_color = { 0, 0, 0, 0 },
+		text_color = { 1, 1, 1 },
+		variables = {
+			money = function()
+				return game_state.money
+			end,
+		},
+	})
+	left_bar:add_element("textbox", {
+		text = "Bait: ${bait}$",
+		width = 100,
+		bg_color = { 0, 0, 0, 0 },
+		text_color = { 1, 1, 1 },
+		variables = {
+			bait = function()
+				return game_state.bait_left
+			end,
+		},
+	})
+	left_bar:add_element("textbox", {
+		text = "Press y to save catch",
 		width = 100,
 		y_padding = 5,
+		bg_color = { 0, 0, 0, 0 },
+		text_color = { 1, 1, 1 },
+	})
+	left_bar:add_element("textbox", {
+		text = "Press n to release catch",
+		width = 100,
+		y_padding = 5,
+		bg_color = { 0, 0, 0, 0 },
+		text_color = { 1, 1, 1 },
 	})
 	bottom_bar = container:new(
 		0,
@@ -66,6 +98,10 @@ function love.load()
 	particle_system:setColors(1, 1, 1, 1, 1, 1, 1, 0)
 	particle_system:setSpeed(2, 3)
 	particle_system:emit(50)
+
+	local fishing_line_x = (love.graphics.getWidth() - love.graphics.getWidth() * 0.1) / 2
+		+ (love.graphics.getWidth() * 0.1)
+	my_fishing_line = fishing_line:new(fishing_line_x)
 end
 
 function love.mousepressed(x, y, mouse_button) end
@@ -73,6 +109,7 @@ function love.mousepressed(x, y, mouse_button) end
 function love.update(dt)
 	elapsed = elapsed + dt
 	particle_system:update(dt)
+	my_fishing_line:animate(dt)
 end
 
 function love.resize()
@@ -83,54 +120,43 @@ end
 
 function love.keypressed(key, scancode, isrepeat)
 	if key == "space" then
-		if
-			not game_state.current_fish
-			and #game_state.pond > 0
-			and game_state.bait_left > 0
-			and #game_state.fish_caught_this_round < 5
-		then
-			game_state.current_fish, game_state.bait_left = game.catch_fish(game_state.pond, game_state.bait_left)
-			game_state.status_text = (
-				"You caught a "
-				.. game_state.current_fish.name
-				.. "!\nDo you wnat to keep it? (Y/n)"
-			)
-		elseif #game_state.pond == 0 then
-			print("You lost :(")
-		elseif game_state.bait_left == 0 then
-			print("Out of bait")
+		if check_requirements("can_catch_fish") then
+			game_state.current_fish = game.catch_fish(game_state.pond, game_state.bait_left)
+			if game_state.current_fish then
+				my_fishing_line:start_catching_animation(game_state.current_fish)
+			end
+
+			game_state.state = "fish_caught"
 		end
 	end
 
 	if key == "y" then
-		if game_state.current_fish then
-			-- print("Fish caught!")
+		if check_requirements("can_release_or_save") then
 			game_state.fish_caught_this_round[#game_state.fish_caught_this_round + 1] = game_state.current_fish
-		end
+			game_state.current_fish = false
+			my_fishing_line:start_reset_animation()
 
-		game_state.current_fish = false
-		game_state.status_text = "Press space to catch a fish"
-		if game_state.bait_left == 0 then
-			game_state.state = "shop"
+			game_state.bait_left = game_state.bait_left - 1
+			if game_state.bait_left == 0 then
+				game_state.state = "shop"
+			else
+				game_state.state = "catching"
+			end
 		end
 	end
 
 	if key == "n" then
-		if game_state.current_fish then
-			-- print("Fish released!")
+		if check_requirements("can_release_or_save") then
 			game_state.fish_released_this_round[#game_state.fish_released_this_round + 1] = game_state.current_fish
-		end
+			game_state.current_fish = false
+			my_fishing_line:start_reset_animation()
 
-		game_state.current_fish = false
-		game_state.status_text = "Press space to catch a fish"
-		if game_state.bait_left == 0 then
-			game_state.state = "shop"
-		end
-	end
-
-	if key == "return" then
-		if game_state.state == "shop" then
-			game.end_round(rng)
+			game_state.bait_left = game_state.bait_left - 1
+			if game_state.bait_left == 0 then
+				game_state.state = "shop"
+			else
+				game_state.state = "catching"
+			end
 		end
 	end
 end
@@ -143,4 +169,30 @@ function love.draw()
 	grain_shader:send("u_time", elapsed)
 
 	render.render_game()
+end
+
+---@param check_for "can_catch_fish" | "can_release_or_save"
+---@return boolean
+function check_requirements(check_for)
+	if check_for == "can_catch_fish" then
+		if game_state.state == "catching" and my_fishing_line.state == "idle" and game_state.bait_left > 0 then
+			return true
+		else
+			return false
+		end
+	end
+
+	if check_for == "can_release_or_save" then
+		if
+			game_state.state == "fish_caught"
+			and my_fishing_line.state == "fish_caught"
+			and game_state.bait_left > 0
+		then
+			return true
+		else
+			return false
+		end
+	end
+
+	return false
 end

@@ -1,21 +1,13 @@
 local math_helpers = require("src.math_helpers")
 local game = require("src.game_functions")
 local game_state = require("src.globals.globals")
-local fish_species = require("src.fish_species")
+local fish_sprites = require("src.fish_sprites")
 local R = {}
 local fish_sprite_batch
 local algae_canvas
 local second_algae_canvas
-FISH_TEXTURES = {}
-
 function R.load()
-	local sprite_sheet = love.graphics.newImage("assets/sprites/common_fish.png")
-	fish_sprite_batch = love.graphics.newSpriteBatch(sprite_sheet)
-	for _, fish in pairs(fish_species) do
-		local x_pos = (fish.sprite_index - 1) * 128
-		local y_pos = 0 -- update to use rarity to index for sprites when i get more textures
-		FISH_TEXTURES[fish.sprite_index] = love.graphics.newQuad(x_pos, y_pos, 128, 128, sprite_sheet)
-	end
+	fish_sprite_batch = love.graphics.newSpriteBatch(fish_sprites.get_image())
 	R.resize()
 end
 
@@ -39,7 +31,7 @@ end
 local function make_fish_batch(fish_table, x_start, y_start, sprite_width)
 	local i = 0
 	for _, fish in pairs(fish_table) do
-		fish_sprite_batch:add(FISH_TEXTURES[fish.sprite_index], x_start + (i * sprite_width), y_start)
+		fish_sprite_batch:add(fish_sprites.get_quad(fish), x_start + (i * sprite_width), y_start)
 		i = i + 1
 	end
 end
@@ -70,7 +62,7 @@ function R.draw_shop()
 	local i = 0
 	for _, fish in pairs(game_state.fish_caught_this_round) do
 		local x_offset = i * 128
-		fish_sprite_batch:add(FISH_TEXTURES[fish.sprite_index], x_offset, 10)
+		fish_sprite_batch:add(fish_sprites.get_quad(fish), x_offset, 10)
 		love.graphics.print("$" .. fish.price, 64 + x_offset, 138)
 		love.graphics.print(math_helpers.round(fish.weight, 2) .. "kg", 64 + x_offset, 153)
 		love.graphics.print(math_helpers.round(fish.length, 2) .. "cm", 64 + x_offset, 168)
@@ -114,6 +106,7 @@ function R.render_game()
 	love.graphics.setShader()
 	left_bar:render()
 	bottom_bar:render()
+	my_fishing_line:render()
 end
 
 return R

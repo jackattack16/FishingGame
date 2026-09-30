@@ -9,6 +9,7 @@
 ---@field multiplier number
 ---@field rarity integer
 ---@field price number
+---@field draw fun(self: Fish, x: number, y: number, rotation?: number, scale_x?: number, scale_y?: number, origin_x?: number, origin_y?: number) Draw the sprite; rotation is in radians and origin is in sprite pixels.
 local Fish = {}
 
 ---@class FishSpecies

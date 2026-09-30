@@ -6,7 +6,7 @@
 ---@field fish_caught_this_round Fish[]
 ---@field fish_released_this_round Fish[]
 ---@field bait_left number
----@field state "catching"|"shop"
+---@field state "catching"|"shop"|"fish_caught"
 ---@field status_text string
 ---@field money number
 local GameState = {}

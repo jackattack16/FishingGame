@@ -1,5 +1,6 @@
 local math_helpers = require("src.math_helpers")
 local fish_species = require("src.fish_species")
+local fish_sprites = require("src.fish_sprites")
 local RARITY_PRICE_BONUS = { 2.3, 3, 8, 25 }
 
 local Fish = {}
@@ -54,6 +55,17 @@ function Fish:new(rarity, rng)
 
 	setmetatable(fish, Fish)
 	return fish
+end
+
+---@param x number
+---@param y number
+---@param rotation? number Radians.
+---@param scale_x? number Defaults to 1.
+---@param scale_y? number Defaults to scale_x.
+---@param origin_x? number Rotation and scaling origin within the sprite; defaults to 0.
+---@param origin_y? number Rotation and scaling origin within the sprite; defaults to 0.
+function Fish:draw(x, y, rotation, scale_x, scale_y, origin_x, origin_y)
+	fish_sprites.draw(self, x, y, rotation, scale_x, scale_y, origin_x, origin_y)
 end
 
 return Fish
