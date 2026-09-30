@@ -104,7 +104,7 @@ end
 
 ---Add a button, text box, invisible spacer, or image. For a sprite, pass its sheet as image and the sprite's Quad as quad.
 ---@param component_type "button" | "textbox" | "spacer" | "image"
----@param parameters? {width?: number | "fit", height?: number | "fit", text?: string, on_click?: function, x_padding?: number, y_padding?: number, horizontal_text_align?: "center" | "none", vertical_text_align?: "center" | "none", bg_color?: number[], text_color?: number[], radius?: number, border_color?: number[], border_width?: number, image?: love.Image, quad?: love.Quad}
+---@param parameters? {width?: number | "fit", height?: number | "fit", text?: string, variables?: table<string, any>, on_click?: function, x_padding?: number, y_padding?: number, horizontal_text_align?: "center" | "none", vertical_text_align?: "center" | "none", bg_color?: number[], text_color?: number[], radius?: number, border_color?: number[], border_width?: number, image?: love.Image, quad?: love.Quad}
 function Container:add_element(component_type, parameters)
 	local new_element
 	if component_type == "button" then

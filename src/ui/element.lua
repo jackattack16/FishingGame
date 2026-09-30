@@ -62,6 +62,8 @@ function Element:new(
 		width = calculated_width,
 		height = calculated_height,
 		text = created_text,
+		text_string = text,
+		horizontal_text_align = horizontal_text_align,
 		text_x_offset = calculated_text_x_offset,
 		text_y_offset = calculated_text_y_offset,
 		bg_color = style.bg_color or { 1, 1, 1, 1 },
