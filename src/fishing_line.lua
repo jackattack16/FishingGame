@@ -56,7 +56,7 @@ function Fishing_Line:animate(dt)
 end
 
 function Fishing_Line:render()
-	love.graphics.setColor({ 0.761, 0.047, 0.047 })
+	love.graphics.setColor({ 0.62, 0.65, 0.68 })
 	love.graphics.line(self.top_x, self.top_y, self.bobber_x, self.bobber_y)
 	love.graphics.setColor({ 1, 1, 1 })
 	if self.caught_fish then

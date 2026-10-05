@@ -28,11 +28,15 @@ float evolvingNoise(vec2 pos, float time) {
 }
 
 vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
-	vec2 st = screen_coords / u_resolution;
+	vec2 st_full = screen_coords / u_resolution;
+	// Match pixelate.frag block size so water cells align with the algae.
+	vec2 pixel_grid = vec2(15.0 / 2048.0, 10.0 / 2048.0);
+	vec2 st = floor(st_full / pixel_grid) * pixel_grid;
 	float n = evolvingNoise(st * 5.0, u_time * 0.075);
-	vec3 water = vec3(max(n / 10.0, 0.024), max(n / 2.0, 0.145), max(n, 0.259));
-	vec3 lit = mix(water, vec3(1.0), st.x * 0.05);
-	vec3 dark = mix(water, vec3(0.0), st.y * 2);
+	// vec3 water = vec3(max(n / 10.0, 0.024), max(n / 2.0, 0.145), max(n, 0.259));
+	vec3 water = vec3(max(n / 10.0, 0.043), max(n / 2.0, 0.259), max(n, 0.459));
+	vec3 lit = mix(water, vec3(1.0), st_full.x * 0.05);
+	vec3 dark = mix(water, vec3(0.0), st_full.y * 2);
 	vec3 result = mix(lit, dark, 0.5);
 	return vec4(result, 0.25);
 }

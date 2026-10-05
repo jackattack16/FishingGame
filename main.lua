@@ -2,9 +2,11 @@ local game = require("src.game_functions")
 local render = require("src.render")
 local game_state = require("src.globals.globals")
 local rng
-local container = require("src.ui.container")
+local UI = require("src.ui.json_ui")
 local elapsed = 0
 local fishing_line = require("src.fishing_line")
+local shop = require("src.shop")
+local fish_transfer = require("src.fish_transfer")
 
 if os.getenv("LOVE2D_TOOLS") then
 	pcall(require, "_love2d_tools_bridge")
@@ -12,114 +14,147 @@ end
 
 function love.load()
 	love.window.maximize()
+	love.graphics.setDefaultFilter("nearest", "nearest")
+	love.graphics.setLineStyle("rough")
+	local font_settings = shop.theme.fonts
+	love.graphics.setFont(
+		font_settings.path and love.graphics.newFont(font_settings.path, font_settings.default)
+			or love.graphics.newFont(font_settings.default)
+	)
 	rng = love.math.newRandomGenerator()
 	rng:setSeed(os.time()) -- use a fresh seed each time the game starts
+	shop.rng = rng
+	shop.load()
 
 	game_state.pond = game.make_pond(50, rng)
 	render.load()
 	local screen_width, screen_height = love.graphics.getDimensions()
-	left_bar = container:new(
-		0,
-		0,
-		"10%",
-		"85%",
-		10,
-		10,
-		"column",
-		"together",
-		{ wrap = true, gap = 2, bg_color = { 0, 0, 0, 0.5 } }
-	)
-
-	left_bar:add_element("textbox", {
-		text = "Money: $${money}$",
-		width = 100,
-		bg_color = { 0, 0, 0, 0 },
-		text_color = { 1, 1, 1 },
-		variables = {
-			money = function()
-				return game_state.money
-			end,
-		},
+	local hud = UI.load("assets/ui/fishing_hud.json", {
+		money = function()
+			return game_state.money
+		end,
+		bait = function()
+			return game_state.bait_left
+		end,
 	})
-	left_bar:add_element("textbox", {
-		text = "Bait: ${bait}$",
-		width = 100,
-		bg_color = { 0, 0, 0, 0 },
-		text_color = { 1, 1, 1 },
-		variables = {
-			bait = function()
-				return game_state.bait_left
-			end,
-		},
-	})
-	left_bar:add_element("textbox", {
-		text = "Press y to save catch",
-		width = 100,
-		y_padding = 5,
-		bg_color = { 0, 0, 0, 0 },
-		text_color = { 1, 1, 1 },
-	})
-	left_bar:add_element("textbox", {
-		text = "Press n to release catch",
-		width = 100,
-		y_padding = 5,
-		bg_color = { 0, 0, 0, 0 },
-		text_color = { 1, 1, 1 },
-	})
-	bottom_bar = container:new(
-		0,
-		"85%",
-		"full",
-		"15%",
-		10,
-		10,
-		"row",
-		"together",
-		{ wrap = true, gap = 10, bg_color = { 0, 0, 0, 0.5 } }
-	)
-	bottom_bar:add_element("button", {
-		text = "Settings",
-		bg_color = { 0.153, 0.153, 0.153 },
-		height = 100,
-		width = 10,
-	})
+	left_bar, bottom_bar = hud.by_id.left_bar, hud.by_id.bottom_bar
 	water_shader = love.graphics.newShader("src/shaders/water.frag")
 	distort_shader = love.graphics.newShader("src/shaders/distort.frag")
 	pixelate_shader = love.graphics.newShader("src/shaders/pixelate.frag")
 	grain_shader = love.graphics.newShader("src/shaders/grain.frag")
 
-	local particle_image = love.graphics.newImage("assets/sprites/fish_particle.png")
-	particle_system = love.graphics.newParticleSystem(particle_image, 100)
-	particle_system:setParticleLifetime(1, 50)
-	particle_system:setEmissionRate(5)
+	-- Particle sprite sheet: 16x16 tiles, fish is first, bubble is second.
+	-- ParticleSystems render the whole source image per particle, so each tile
+	-- gets sliced into its own 16x16 canvas.
+	local TILE_SIZE = 16
+	local particle_sheet = love.graphics.newImage("assets/sprites/particles.png")
+
+	local function make_tile_image(tile_index)
+		local tile = love.graphics.newCanvas(TILE_SIZE, TILE_SIZE)
+		tile:setFilter("nearest", "nearest")
+		love.graphics.push("all")
+		love.graphics.setCanvas(tile)
+		love.graphics.clear(0, 0, 0, 0)
+		love.graphics.draw(particle_sheet, 0, 0, 0, 1, 1, (tile_index - 1) * TILE_SIZE, 0)
+		love.graphics.pop()
+		return tile
+	end
+
+	local fish_particle_image = make_tile_image(1)
+	local bubble_particle_image = make_tile_image(2)
+
+	-- A small school of fish that swim steadily across the screen, left to right.
+	particle_system = love.graphics.newParticleSystem(fish_particle_image, 30)
+	particle_system:setParticleLifetime(22, 32)
+	particle_system:setEmissionRate(1)
 	particle_system:setDirection(0)
-	particle_system:setLinearAcceleration(2, -0.25, 4, 0.25)
+	particle_system:setSpread(0.08)
+	particle_system:setSpeed(65, 105)
+	particle_system:setLinearAcceleration(0, -0.5, 0, 0.5)
 	particle_system:setEmissionArea("uniform", 25, screen_height, 0)
 	particle_system:setColors(1, 1, 1, 1, 1, 1, 1, 0)
-	particle_system:setSpeed(2, 3)
-	particle_system:emit(50)
+	particle_system:emit(8)
+
+	-- Occasional bubbles rising from the bottom.
+	bubble_system = love.graphics.newParticleSystem(bubble_particle_image, 24)
+	bubble_system:setParticleLifetime(12, 20)
+	bubble_system:setEmissionRate(1)
+	bubble_system:setDirection(-math.pi / 2)
+	bubble_system:setSpread(0.15)
+	bubble_system:setSpeed(60, 110)
+	bubble_system:setLinearAcceleration(0, -10, 0, -4)
+	bubble_system:setSizes(0.35, 0.55)
+	bubble_system:setSizeVariation(0.5)
+	bubble_system:setColors(0.85, 0.95, 1.0, 0.85, 0.85, 0.95, 1.0, 0)
+	bubble_system:setEmissionArea("uniform", screen_width, 25, 0)
+	bubble_system:emit(6)
 
 	local fishing_line_x = (love.graphics.getWidth() - love.graphics.getWidth() * 0.1) / 2
 		+ (love.graphics.getWidth() * 0.1)
 	my_fishing_line = fishing_line:new(fishing_line_x)
 end
 
-function love.mousepressed(x, y, mouse_button) end
+function love.mousepressed(x, y, mouse_button)
+	if game_state.state == "shop" then
+		shop.mousepressed(x, y, mouse_button)
+	end
+end
 
 function love.update(dt)
 	elapsed = elapsed + dt
 	particle_system:update(dt)
+	bubble_system:update(dt)
 	my_fishing_line:animate(dt)
+	if fish_transfer.update(dt) then
+		if game_state.bait_left == 0 then
+			game_state.state = "shop"
+			shop.open()
+		else
+			game_state.state = "catching"
+		end
+	end
 end
 
 function love.resize()
 	render.resize()
+	shop.resize()
 	left_bar:layout()
 	bottom_bar:layout()
+	bubble_system:setEmissionArea("uniform", love.graphics.getWidth(), 25, 0)
+end
+
+local function finish_catch(fish_list, row_number)
+	if not check_requirements("can_release_or_save") then
+		return
+	end
+	local fish = game_state.current_fish
+	local index = #fish_list + 1
+	fish_list[index] = fish
+	fish_transfer.start(fish, my_fishing_line.bobber_x, my_fishing_line.bobber_y, function()
+		return render.get_bottom_fish_slot(row_number, index)
+	end)
+	game_state.current_fish = false
+	my_fishing_line.caught_fish = false
+	my_fishing_line:start_reset_animation()
+	game_state.bait_left = game_state.bait_left - 1
+	game_state.state = "transferring_fish"
 end
 
 function love.keypressed(key, scancode, isrepeat)
+	if isrepeat then
+		return
+	end
+	if game_state.state == "shop" then
+		shop.keypressed(key)
+		return
+	end
 	if key == "space" then
+		if game_state.state == "catching" and #game_state.pond == 0 then
+			game_state.state = "shop"
+			shop.open()
+			shop.message = "The pond is empty. Restocking effects are coming later."
+			return
+		end
 		if check_requirements("can_catch_fish") then
 			game_state.current_fish = game.catch_fish(game_state.pond, game_state.bait_left)
 			if game_state.current_fish then
@@ -131,33 +166,11 @@ function love.keypressed(key, scancode, isrepeat)
 	end
 
 	if key == "y" then
-		if check_requirements("can_release_or_save") then
-			game_state.fish_caught_this_round[#game_state.fish_caught_this_round + 1] = game_state.current_fish
-			game_state.current_fish = false
-			my_fishing_line:start_reset_animation()
-
-			game_state.bait_left = game_state.bait_left - 1
-			if game_state.bait_left == 0 then
-				game_state.state = "shop"
-			else
-				game_state.state = "catching"
-			end
-		end
+		finish_catch(game_state.fish_caught_this_round, 1)
 	end
 
 	if key == "n" then
-		if check_requirements("can_release_or_save") then
-			game_state.fish_released_this_round[#game_state.fish_released_this_round + 1] = game_state.current_fish
-			game_state.current_fish = false
-			my_fishing_line:start_reset_animation()
-
-			game_state.bait_left = game_state.bait_left - 1
-			if game_state.bait_left == 0 then
-				game_state.state = "shop"
-			else
-				game_state.state = "catching"
-			end
-		end
+		finish_catch(game_state.fish_released_this_round, 2)
 	end
 end
 

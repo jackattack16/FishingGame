@@ -1,7 +1,7 @@
-local math_helpers = require("src.math_helpers")
-local game = require("src.game_functions")
 local game_state = require("src.globals.globals")
 local fish_sprites = require("src.fish_sprites")
+local shop = require("src.shop")
+local fish_transfer = require("src.fish_transfer")
 local R = {}
 local fish_sprite_batch
 local algae_canvas
@@ -56,29 +56,39 @@ function R.draw_catching()
 end
 
 function R.draw_shop()
-	-- Draw the caught fish and their prices and stats
-	love.graphics.print("Caught Fish", 5, 5)
-	fish_sprite_batch:clear()
-	local i = 0
-	for _, fish in pairs(game_state.fish_caught_this_round) do
-		local x_offset = i * 128
-		fish_sprite_batch:add(fish_sprites.get_quad(fish), x_offset, 10)
-		love.graphics.print("$" .. fish.price, 64 + x_offset, 138)
-		love.graphics.print(math_helpers.round(fish.weight, 2) .. "kg", 64 + x_offset, 153)
-		love.graphics.print(math_helpers.round(fish.length, 2) .. "cm", 64 + x_offset, 168)
-		i = i + 1
-	end
-	love.graphics.draw(fish_sprite_batch, 0, 0)
+	shop.draw()
+end
 
-	-- Draw the total shop sell value
-	love.graphics.print(
-		"Sell for: $" .. game.get_sum_of_fish_values(game_state.fish_caught_this_round) .. "\nPress enter to sell",
-		5,
-		220,
-		0,
-		2,
-		2
-	)
+local function bottom_fish_row_geometry(row_number)
+	local button = bottom_bar.elements[1]
+	local font = love.graphics.getFont()
+	local row_height = bottom_bar.height / 2
+	local row_y = bottom_bar.y + bottom_bar.y_padding + (row_number - 1) * row_height
+	local label_x = button.x + button.width + 16
+	local fish_x = label_x + math.max(font:getWidth("Released:"), font:getWidth("Caught:")) + 12
+	local right_edge = bottom_bar.x + bottom_bar.x_padding + bottom_bar.width
+	local sprite_size = math.max(0, math.min(row_height - 4, (right_edge - fish_x) / 5))
+	return label_x, row_y, row_height, fish_x, sprite_size
+end
+
+-- Both the row and the flight use this slot, including after a window resize.
+function R.get_bottom_fish_slot(row_number, index)
+	local _, row_y, row_height, fish_x, size = bottom_fish_row_geometry(row_number)
+	return fish_x + (index - 0.5) * size, row_y + row_height / 2, size
+end
+
+local function draw_bottom_fish_row(fish_list, label, row_number)
+	local label_x, row_y, row_height = bottom_fish_row_geometry(row_number)
+	local font = love.graphics.getFont()
+
+	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.print(label, math.floor(label_x + 0.5), math.floor(row_y + (row_height - font:getHeight()) / 2 + 0.5))
+	for index, fish in ipairs(fish_list) do
+		if not fish_transfer.active or fish_transfer.active.fish ~= fish then
+			local x, y, size = R.get_bottom_fish_slot(row_number, index)
+			fish_sprites.draw(fish, x, y, 0, size / 128, size / 128, 64, 64)
+		end
+	end
 end
 
 function R.render_game()
@@ -92,6 +102,7 @@ function R.render_game()
 	love.graphics.setColor({ 0.063, 0.208, 0.478, 0.25 })
 	love.graphics.rectangle("fill", 0, 0, width, height)
 	love.graphics.draw(particle_system, -15, 0)
+	love.graphics.draw(bubble_system, width / 2, height + 10)
 
 	love.graphics.setCanvas(second_algae_canvas)
 	love.graphics.clear(0, 0, 0, 0)
@@ -104,9 +115,16 @@ function R.render_game()
 	love.graphics.setShader(pixelate_shader)
 	love.graphics.draw(second_algae_canvas, 0, 0)
 	love.graphics.setShader()
+	if game_state.state == "shop" then
+		R.draw_shop()
+		return
+	end
 	left_bar:render()
 	bottom_bar:render()
+	draw_bottom_fish_row(game_state.fish_caught_this_round, "Caught:", 1)
+	draw_bottom_fish_row(game_state.fish_released_this_round, "Released:", 2)
 	my_fishing_line:render()
+	fish_transfer.draw()
 end
 
 return R

@@ -8,8 +8,8 @@ local game_state = {
 	state = "catching",
 	status_text = "press space to catch a fish",
 	money = 0,
+	round = 1,
+	shop_purchases = {},
 }
 
 return game_state
-
-

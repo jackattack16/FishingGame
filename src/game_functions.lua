@@ -84,6 +84,7 @@ function G.end_round(rng)
 	game_state.fish_released_this_round = {}
 	game_state.current_fish = false
 	game_state.bait_left = 5
+	game_state.round = game_state.round + 1
 	game_state.status_text = "Press space to catch a fish"
 	game_state.state = "catching"
 end
