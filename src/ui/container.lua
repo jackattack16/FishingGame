@@ -75,6 +75,7 @@ end
 function Container:new(x, y, width, height, x_padding, y_padding, display_direction, spacing, style)
 	style = style or {}
 	local new_container = {
+		is_container = true,
 		x = type(x) == "number" and x or 0,
 		y = type(y) == "number" and y or 0,
 		width = type(width) == "number" and width or 0,
@@ -102,12 +103,30 @@ function Container:new(x, y, width, height, x_padding, y_padding, display_direct
 	return new_container
 end
 
----Add a button, text box, invisible spacer, or image. For a sprite, pass its sheet as image and the sprite's Quad as quad.
----@param component_type "button" | "textbox" | "spacer" | "image"
----@param parameters? {width?: number | "fit", height?: number | "fit", text?: string, variables?: table<string, any>, on_click?: function, x_padding?: number, y_padding?: number, horizontal_text_align?: "center" | "none", vertical_text_align?: "center" | "none", bg_color?: number[], text_color?: number[], radius?: number, border_color?: number[], border_width?: number, image?: love.Image, quad?: love.Quad}
+---Add a component. Nested container width/height are outer percentages of this container; padding is in pixels.
+---@param component_type "button" | "textbox" | "spacer" | "image" | "container"
+---@param parameters? {width?: number | "fit", height?: number | "fit", text?: string, variables?: table<string, any>, on_click?: function, has_on_click?: boolean, x_padding?: number, y_padding?: number, horizontal_text_align?: "center" | "none", vertical_text_align?: "center" | "none", text_align?: "left" | "center" | "right", font?: love.Font, bg_color?: number[], text_color?: number[], radius?: number, border_color?: number[], border_width?: number, image?: love.Image, quad?: love.Quad, padding?: number, display_direction?: "row" | "column", spacing?: "between" | "evenly" | "together", wrap?: boolean, wrap_gap?: number, gap?: number}
+---@return Element | Container
 function Container:add_element(component_type, parameters)
 	local new_element
-	if component_type == "button" then
+	if component_type == "container" then
+		local options = parameters or {}
+		local width, height = options.width or 100, options.height or 100
+		local padding = options.padding or 0
+		assert(type(width) == "number" and type(height) == "number", "Nested container sizes must be percentages")
+		assert(width >= 0 and height >= 0 and padding >= 0, "Container sizes and padding must be nonnegative")
+		new_element = Container:new(
+			0,
+			0,
+			math.max(0, self.width * width / 100 - padding * 2),
+			math.max(0, self.height * height / 100 - padding * 2),
+			padding,
+			padding,
+			options.display_direction or "column",
+			options.spacing or "together",
+			options
+		)
+	elseif component_type == "button" then
 		local button_paramaters = BUTTON.get_defaults()
 		for key, value in pairs(parameters or {}) do
 			button_paramaters[key] = value
@@ -147,7 +166,7 @@ function Container:add_element(component_type, parameters)
 		local spacer_height = parameters and parameters.height
 		assert(
 			type(spacer_width) == "number"
-			and type(spacer_height) == "number"
+				and type(spacer_height) == "number"
 				and spacer_width >= 0
 				and spacer_height >= 0,
 			"Spacer width and height must be nonnegative percentages of the container"
@@ -166,6 +185,7 @@ function Container:add_element(component_type, parameters)
 
 	self.elements[#self.elements + 1] = new_element
 	self:layout()
+	return new_element
 end
 
 function Container:layout()
@@ -179,9 +199,12 @@ function Container:layout()
 	local line = { elements = {}, main_size = 0, cross_size = 0 }
 
 	for _, element in ipairs(self.elements) do
-		local main_size = is_row and element.width or element.height
-		local cross_size = is_row and element.height or element.width
-		if self.wrap and #line.elements > 0 and line.main_size + gap + main_size > available then
+		local outer_width = element.width + (element.is_container and element.x_padding * 2 or 0)
+		local outer_height = element.height + (element.is_container and element.y_padding * 2 or 0)
+		local main_size = is_row and outer_width or outer_height
+		local cross_size = is_row and outer_height or outer_width
+		-- Percentage sizes can differ by a fraction of a pixel after floating-point arithmetic.
+		if self.wrap and #line.elements > 0 and line.main_size + gap + main_size > available + 0.000001 then
 			lines[#lines + 1] = line
 			line = { elements = {}, main_size = 0, cross_size = 0 }
 		end
@@ -209,6 +232,8 @@ function Container:layout()
 
 		local main_offset = 0
 		for index, element in ipairs(current_line.elements) do
+			local outer_width = element.width + (element.is_container and element.x_padding * 2 or 0)
+			local outer_height = element.height + (element.is_container and element.y_padding * 2 or 0)
 			local spacing_gap = 0
 			if self.spacing == "evenly" then
 				spacing_gap = spacing_offset * index
@@ -218,11 +243,14 @@ function Container:layout()
 			if is_row then
 				element.x = self.x + self.x_padding + main_offset + spacing_gap
 				element.y = self.y + self.y_padding + cross_offset
-				main_offset = main_offset + element.width + gap
+				main_offset = main_offset + outer_width + gap
 			else
 				element.x = self.x + self.x_padding + cross_offset
 				element.y = self.y + self.y_padding + main_offset + spacing_gap
-				main_offset = main_offset + element.height + gap
+				main_offset = main_offset + outer_height + gap
+			end
+			if element.is_container then
+				element:layout()
 			end
 		end
 		cross_offset = cross_offset + current_line.cross_size + wrap_gap
@@ -249,10 +277,13 @@ end
 
 function Container:check_clicks(mouse_x, mouse_y)
 	for _, element in ipairs(self.elements) do
-		if element.has_on_click and element:contains_point(mouse_x, mouse_y) then
+		if element.is_container and element:check_clicks(mouse_x, mouse_y) then
+			return true
+		elseif element.has_on_click and element:contains_point(mouse_x, mouse_y) then
 			element.on_click()
-			return
+			return true
 		end
 	end
+	return false
 end
 return Container

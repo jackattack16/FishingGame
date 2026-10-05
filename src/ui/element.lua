@@ -12,7 +12,7 @@ Element.__index = Element
 ---@param y_padding number
 ---@param horizontal_text_align "center" | "none"
 ---@param vertical_text_align "center" | "none"
----@param style? {bg_color?: number[], text_color?: number[], radius?: number, border_color?: number[], border_width?: number}
+---@param style? {bg_color?: number[], text_color?: number[], radius?: number, border_color?: number[], border_width?: number, font?: love.Font}
 ---@return T
 function Element:new(
 	parent,
@@ -30,7 +30,7 @@ function Element:new(
 	x_padding = (x_padding / 100) * parent.width
 	y_padding = (y_padding / 100) * parent.height
 
-	local created_text = love.graphics.newText(love.graphics.getFont(), text)
+	local created_text = love.graphics.newText(style.font or love.graphics.getFont(), text)
 	local text_width = created_text:getWidth()
 	local text_height = created_text:getHeight()
 
@@ -64,6 +64,7 @@ function Element:new(
 		text = created_text,
 		text_string = text,
 		horizontal_text_align = horizontal_text_align,
+		vertical_text_align = vertical_text_align,
 		text_x_offset = calculated_text_x_offset,
 		text_y_offset = calculated_text_y_offset,
 		bg_color = style.bg_color or { 1, 1, 1, 1 },
@@ -117,7 +118,7 @@ function Element:render()
 		)
 	end
 	love.graphics.setColor(self.text_color[1], self.text_color[2], self.text_color[3], self.text_color[4] or 1)
-	love.graphics.draw(self.text, x + self.text_x_offset, y + self.text_y_offset)
+	love.graphics.draw(self.text, math.floor(x + self.text_x_offset + 0.5), math.floor(y + self.text_y_offset + 0.5))
 	love.graphics.setLineWidth(old_line_width)
 	love.graphics.setColor(old_r, old_g, old_b, old_a)
 end

@@ -8,6 +8,7 @@
 ---@field text love.Text
 ---@field text_string string
 ---@field horizontal_text_align "center" | "none"
+---@field vertical_text_align "center" | "none"
 ---@field text_x_offset number
 ---@field text_y_offset number
 ---@field bg_color number[]

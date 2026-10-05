@@ -38,12 +38,13 @@ end
 function Image_Element:render()
 	local old_r, old_g, old_b, old_a = love.graphics.getColor()
 	love.graphics.setColor(1, 1, 1, 1)
-	local scale_x = self.width / self.source_width
-	local scale_y = self.height / self.source_height
+	local scale_x = math.floor(self.width + 0.5) / self.source_width
+	local scale_y = math.floor(self.height + 0.5) / self.source_height
+	local x, y = math.floor(self.x + 0.5), math.floor(self.y + 0.5)
 	if self.quad then
-		love.graphics.draw(self.image, self.quad, self.x, self.y, 0, scale_x, scale_y)
+		love.graphics.draw(self.image, self.quad, x, y, 0, scale_x, scale_y)
 	else
-		love.graphics.draw(self.image, self.x, self.y, 0, scale_x, scale_y)
+		love.graphics.draw(self.image, x, y, 0, scale_x, scale_y)
 	end
 	love.graphics.setColor(old_r, old_g, old_b, old_a)
 end

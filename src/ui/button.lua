@@ -12,7 +12,7 @@ Button.__index = Button
 ---@param y_padding number
 ---@param horizontal_text_align "center" | "none"
 ---@param vertical_text_align "center" | "none"
----@param style? {bg_color?: number[], text_color?: number[], radius?: number, border_color?: number[], border_width?: number}
+---@param style? {bg_color?: number[], text_color?: number[], radius?: number, border_color?: number[], border_width?: number, font?: love.Font}
 ---@return Button
 function Button:new(
 	parent,
