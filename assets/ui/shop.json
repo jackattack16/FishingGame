@@ -1,0 +1,1244 @@
+{
+  "templates": {
+    "catch_card": {
+      "type": "container",
+      "width": {
+        "bind": "catch_card_width"
+      },
+      "height": 100,
+      "padding": {
+        "bind": "layout.catch_padding"
+      },
+      "display_direction": "column",
+      "spacing": "together",
+      "bg_color": {
+        "bind": "colors.card"
+      },
+      "text_color": {
+        "bind": "colors.text"
+      },
+      "radius": {
+        "bind": "layout.radius"
+      },
+      "elements": [
+        {
+          "type": "container",
+          "width": 100,
+          "height": {
+            "bind": "layout.catch_sprite_size",
+            "unit": "px"
+          },
+          "display_direction": "row",
+          "spacing": "evenly",
+          "bg_color": {
+            "bind": "colors.transparent"
+          },
+          "text_color": {
+            "bind": "colors.text"
+          },
+          "radius": {
+            "bind": "layout.radius"
+          },
+          "elements": [
+            {
+              "type": "image",
+              "width": {
+                "bind": "layout.catch_sprite_size",
+                "unit": "px"
+              },
+              "height": 100,
+              "image": {
+                "bind": "fish_image"
+              },
+              "quad": {
+                "bind": "catch_quad"
+              }
+            }
+          ]
+        },
+        {
+          "type": "textbox",
+          "width": 100,
+          "height": {
+            "bind": "layout.catch_name_height",
+            "unit": "px"
+          },
+          "text": {
+            "bind": "item.name"
+          },
+          "font": "body",
+          "text_align": "left",
+          "horizontal_text_align": "none",
+          "vertical_text_align": "none",
+          "bg_color": {
+            "bind": "colors.transparent"
+          },
+          "text_color": {
+            "bind": "colors.text"
+          }
+        },
+        {
+          "type": "textbox",
+          "width": 100,
+          "height": {
+            "bind": "layout.catch_stats_height",
+            "unit": "px"
+          },
+          "text": {
+            "bind": "catch_stats"
+          },
+          "font": "small",
+          "text_align": "left",
+          "horizontal_text_align": "none",
+          "vertical_text_align": "none",
+          "bg_color": {
+            "bind": "colors.transparent"
+          },
+          "text_color": {
+            "bind": "colors.muted"
+          }
+        },
+        {
+          "type": "textbox",
+          "width": 100,
+          "height": {
+            "bind": "layout.catch_price_height",
+            "unit": "px"
+          },
+          "text": {
+            "bind": "catch_price"
+          },
+          "font": "heading",
+          "text_align": "left",
+          "horizontal_text_align": "none",
+          "vertical_text_align": "none",
+          "bg_color": {
+            "bind": "colors.transparent"
+          },
+          "text_color": {
+            "bind": "colors.accent"
+          }
+        }
+      ]
+    },
+    "item_card": {
+      "type": "container",
+      "width": {
+        "bind": "item_card_width"
+      },
+      "height": {
+        "bind": "layout.card_height",
+        "unit": "px"
+      },
+      "padding": {
+        "bind": "layout.card_padding"
+      },
+      "display_direction": "column",
+      "spacing": "together",
+      "bg_color": {
+        "bind": "colors.card"
+      },
+      "text_color": {
+        "bind": "colors.text"
+      },
+      "radius": {
+        "bind": "layout.radius"
+      },
+      "elements": [
+        {
+          "type": "container",
+          "width": 100,
+          "height": {
+            "bind": "layout.item_title_height",
+            "unit": "px"
+          },
+          "display_direction": "row",
+          "spacing": "between",
+          "bg_color": {
+            "bind": "colors.transparent"
+          },
+          "text_color": {
+            "bind": "colors.text"
+          },
+          "radius": {
+            "bind": "layout.radius"
+          },
+          "elements": [
+            {
+              "type": "textbox",
+              "width": {
+                "bind": "item_title_width"
+              },
+              "height": 100,
+              "text": {
+                "bind": "item.name"
+              },
+              "font": "heading",
+              "text_align": "left",
+              "horizontal_text_align": "none",
+              "vertical_text_align": "none",
+              "bg_color": {
+                "bind": "colors.transparent"
+              },
+              "text_color": {
+                "bind": "colors.text"
+              }
+            },
+            {
+              "type": "image",
+              "when": {
+                "bind": "item_has_sprite"
+              },
+              "width": {
+                "bind": "layout.item_sprite_size",
+                "unit": "px"
+              },
+              "height": {
+                "bind": "layout.item_sprite_size",
+                "unit": "px"
+              },
+              "image": {
+                "bind": "fish_image"
+              },
+              "quad": {
+                "bind": "item_quad"
+              }
+            }
+          ]
+        },
+        {
+          "type": "textbox",
+          "width": 100,
+          "height": {
+            "bind": "layout.description_height",
+            "unit": "px"
+          },
+          "text": {
+            "bind": "item.description"
+          },
+          "font": "small",
+          "text_align": "left",
+          "horizontal_text_align": "none",
+          "vertical_text_align": "none",
+          "bg_color": {
+            "bind": "colors.transparent"
+          },
+          "text_color": {
+            "bind": "colors.muted"
+          }
+        },
+        {
+          "type": "spacer",
+          "width": 0,
+          "height": {
+            "bind": "layout.item_gap",
+            "unit": "px"
+          }
+        },
+        {
+          "type": "textbox",
+          "width": 100,
+          "height": {
+            "bind": "layout.owned_height",
+            "unit": "px"
+          },
+          "text": {
+            "bind": "owned_text"
+          },
+          "font": "small",
+          "text_align": "left",
+          "horizontal_text_align": "none",
+          "vertical_text_align": "none",
+          "bg_color": {
+            "bind": "colors.transparent"
+          },
+          "text_color": {
+            "bind": "colors.accent"
+          }
+        },
+        {
+          "type": "spacer",
+          "width": 0,
+          "height": {
+            "bind": "layout.item_gap",
+            "unit": "px"
+          }
+        },
+        {
+          "type": "container",
+          "width": 100,
+          "height": {
+            "bind": "layout.action_height",
+            "unit": "px"
+          },
+          "display_direction": "row",
+          "spacing": "between",
+          "bg_color": {
+            "bind": "colors.transparent"
+          },
+          "text_color": {
+            "bind": "colors.text"
+          },
+          "radius": {
+            "bind": "layout.radius"
+          },
+          "elements": [
+            {
+              "type": "textbox",
+              "width": {
+                "bind": "layout.price_width",
+                "unit": "px"
+              },
+              "height": 100,
+              "text": {
+                "bind": "item_price"
+              },
+              "font": "body",
+              "text_align": "left",
+              "horizontal_text_align": "none",
+              "vertical_text_align": "center",
+              "bg_color": {
+                "bind": "colors.transparent"
+              },
+              "text_color": {
+                "bind": "colors.accent"
+              }
+            },
+            {
+              "type": "button",
+              "id": {
+                "bind": "item.id"
+              },
+              "width": {
+                "bind": "layout.buy_width",
+                "unit": "px"
+              },
+              "height": 100,
+              "text": {
+                "bind": "buy_text"
+              },
+              "on_click": "buy",
+              "has_on_click": {
+                "bind": "can_buy"
+              },
+              "font": "body",
+              "bg_color": {
+                "bind": "buy_color"
+              },
+              "text_color": {
+                "bind": "buy_text_color"
+              },
+              "radius": {
+                "bind": "layout.button_radius"
+              },
+              "border_color": {
+                "bind": "colors.accent"
+              },
+              "border_width": {
+                "bind": "layout.button_border"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "tab": {
+      "type": "button",
+      "id": {
+        "bind": "tab_id"
+      },
+      "width": {
+        "bind": "tab_width"
+      },
+      "height": 100,
+      "text": {
+        "bind": "item.name"
+      },
+      "on_click": "select_tab",
+      "has_on_click": true,
+      "font": "body",
+      "bg_color": {
+        "bind": "tab_color"
+      },
+      "text_color": {
+        "bind": "tab_text_color"
+      },
+      "radius": {
+        "bind": "layout.button_radius"
+      },
+      "border_color": {
+        "bind": "colors.accent"
+      },
+      "border_width": {
+        "bind": "layout.button_border"
+      }
+    }
+  },
+  "window": [
+    {
+      "type": "container",
+      "id": "shop_root",
+      "x": {
+        "bind": "viewport.x"
+      },
+      "y": {
+        "bind": "viewport.y"
+      },
+      "width": {
+        "bind": "root_width"
+      },
+      "height": {
+        "bind": "root_height"
+      },
+      "x_padding": {
+        "bind": "layout.padding_x"
+      },
+      "y_padding": {
+        "bind": "layout.padding_y"
+      },
+      "display_direction": "column",
+      "spacing": "together",
+      "bg_color": {
+        "bind": "colors.panel"
+      },
+      "text_color": {
+        "bind": "colors.text"
+      },
+      "radius": {
+        "bind": "layout.radius"
+      },
+      "elements": [
+        {
+          "type": "container",
+          "id": "header",
+          "width": 100,
+          "height": {
+            "bind": "layout.header_height",
+            "unit": "px"
+          },
+          "display_direction": "row",
+          "spacing": "between",
+          "bg_color": {
+            "bind": "colors.transparent"
+          },
+          "text_color": {
+            "bind": "colors.text"
+          },
+          "radius": {
+            "bind": "layout.radius"
+          },
+          "elements": [
+            {
+              "type": "textbox",
+              "width": 60,
+              "height": 100,
+              "text": "Hatchery shop",
+              "font": "title",
+              "text_align": "left",
+              "horizontal_text_align": "none",
+              "vertical_text_align": "none",
+              "bg_color": {
+                "bind": "colors.transparent"
+              },
+              "text_color": {
+                "bind": "colors.text"
+              }
+            },
+            {
+              "type": "textbox",
+              "width": 38,
+              "height": 100,
+              "text": "BETWEEN ROUNDS  /  ROUND ${round}$",
+              "variables": {
+                "round": {
+                  "bind": "state.round"
+                }
+              },
+              "font": "small",
+              "text_align": "right",
+              "horizontal_text_align": "none",
+              "vertical_text_align": "center",
+              "bg_color": {
+                "bind": "colors.transparent"
+              },
+              "text_color": {
+                "bind": "colors.muted"
+              }
+            }
+          ]
+        },
+        {
+          "type": "spacer",
+          "width": 0,
+          "height": {
+            "bind": "layout.section_gap",
+            "unit": "px"
+          }
+        },
+        {
+          "type": "container",
+          "id": "summary",
+          "width": 100,
+          "height": {
+            "bind": "layout.summary_height",
+            "unit": "px"
+          },
+          "padding": {
+            "bind": "layout.card_padding"
+          },
+          "display_direction": "row",
+          "spacing": "between",
+          "bg_color": {
+            "bind": "colors.card"
+          },
+          "text_color": {
+            "bind": "colors.text"
+          },
+          "radius": {
+            "bind": "layout.radius"
+          },
+          "elements": [
+            {
+              "type": "container",
+              "width": 32,
+              "height": 100,
+              "display_direction": "column",
+              "spacing": "together",
+              "bg_color": {
+                "bind": "colors.transparent"
+              },
+              "text_color": {
+                "bind": "colors.text"
+              },
+              "radius": {
+                "bind": "layout.radius"
+              },
+              "elements": [
+                {
+                  "type": "textbox",
+                  "width": 100,
+                  "height": {
+                    "bind": "small_height",
+                    "unit": "px"
+                  },
+                  "text": "AVAILABLE CASH",
+                  "font": "small",
+                  "text_align": "left",
+                  "horizontal_text_align": "none",
+                  "vertical_text_align": "none",
+                  "bg_color": {
+                    "bind": "colors.transparent"
+                  },
+                  "text_color": {
+                    "bind": "colors.muted"
+                  }
+                },
+                {
+                  "type": "textbox",
+                  "width": 100,
+                  "height": {
+                    "bind": "statistic_height",
+                    "unit": "px"
+                  },
+                  "text": "${value}$",
+                  "variables": {
+                    "value": {
+                      "bind": "cash"
+                    }
+                  },
+                  "font": "heading",
+                  "text_align": "left",
+                  "horizontal_text_align": "none",
+                  "vertical_text_align": "none",
+                  "bg_color": {
+                    "bind": "colors.transparent"
+                  },
+                  "text_color": {
+                    "bind": "colors.accent"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "container",
+              "width": 32,
+              "height": 100,
+              "display_direction": "column",
+              "spacing": "together",
+              "bg_color": {
+                "bind": "colors.transparent"
+              },
+              "text_color": {
+                "bind": "colors.text"
+              },
+              "radius": {
+                "bind": "layout.radius"
+              },
+              "elements": [
+                {
+                  "type": "textbox",
+                  "width": 100,
+                  "height": {
+                    "bind": "small_height",
+                    "unit": "px"
+                  },
+                  "text": "POND STOCK",
+                  "font": "small",
+                  "text_align": "left",
+                  "horizontal_text_align": "none",
+                  "vertical_text_align": "none",
+                  "bg_color": {
+                    "bind": "colors.transparent"
+                  },
+                  "text_color": {
+                    "bind": "colors.muted"
+                  }
+                },
+                {
+                  "type": "textbox",
+                  "width": 100,
+                  "height": {
+                    "bind": "statistic_height",
+                    "unit": "px"
+                  },
+                  "text": "${value}$",
+                  "variables": {
+                    "value": {
+                      "bind": "pond_stock"
+                    }
+                  },
+                  "font": "body",
+                  "text_align": "left",
+                  "horizontal_text_align": "none",
+                  "vertical_text_align": "none",
+                  "bg_color": {
+                    "bind": "colors.transparent"
+                  },
+                  "text_color": {
+                    "bind": "colors.text"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "container",
+              "width": 32,
+              "height": 100,
+              "display_direction": "column",
+              "spacing": "together",
+              "bg_color": {
+                "bind": "colors.transparent"
+              },
+              "text_color": {
+                "bind": "colors.text"
+              },
+              "radius": {
+                "bind": "layout.radius"
+              },
+              "elements": [
+                {
+                  "type": "textbox",
+                  "width": 100,
+                  "height": {
+                    "bind": "small_height",
+                    "unit": "px"
+                  },
+                  "text": "CATCH VALUE",
+                  "font": "small",
+                  "text_align": "left",
+                  "horizontal_text_align": "none",
+                  "vertical_text_align": "none",
+                  "bg_color": {
+                    "bind": "colors.transparent"
+                  },
+                  "text_color": {
+                    "bind": "colors.muted"
+                  }
+                },
+                {
+                  "type": "textbox",
+                  "width": 100,
+                  "height": {
+                    "bind": "statistic_height",
+                    "unit": "px"
+                  },
+                  "text": "${value}$",
+                  "variables": {
+                    "value": {
+                      "bind": "catch_value"
+                    }
+                  },
+                  "font": "heading",
+                  "text_align": "left",
+                  "horizontal_text_align": "none",
+                  "vertical_text_align": "none",
+                  "bg_color": {
+                    "bind": "colors.transparent"
+                  },
+                  "text_color": {
+                    "bind": "colors.text"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "spacer",
+          "width": 0,
+          "height": {
+            "bind": "layout.section_gap",
+            "unit": "px"
+          }
+        },
+        {
+          "type": "container",
+          "id": "tabs",
+          "width": 100,
+          "height": {
+            "bind": "layout.tabs_height",
+            "unit": "px"
+          },
+          "display_direction": "row",
+          "spacing": "between",
+          "bg_color": {
+            "bind": "colors.transparent"
+          },
+          "text_color": {
+            "bind": "colors.text"
+          },
+          "radius": {
+            "bind": "layout.radius"
+          },
+          "elements": [
+            {
+              "use": "tab",
+              "repeat": "shop.categories"
+            }
+          ]
+        },
+        {
+          "type": "spacer",
+          "width": 0,
+          "height": {
+            "bind": "layout.subtitle_gap",
+            "unit": "px"
+          }
+        },
+        {
+          "type": "container",
+          "id": "subtitle",
+          "width": 100,
+          "height": {
+            "bind": "layout.subtitle_height",
+            "unit": "px"
+          },
+          "display_direction": "column",
+          "spacing": "together",
+          "bg_color": {
+            "bind": "colors.transparent"
+          },
+          "text_color": {
+            "bind": "colors.text"
+          },
+          "radius": {
+            "bind": "layout.radius"
+          },
+          "elements": [
+            {
+              "type": "textbox",
+              "width": 100,
+              "height": 100,
+              "text": {
+                "bind": "subtitle"
+              },
+              "font": "small",
+              "text_align": "left",
+              "horizontal_text_align": "none",
+              "vertical_text_align": "none",
+              "bg_color": {
+                "bind": "colors.transparent"
+              },
+              "text_color": {
+                "bind": "colors.muted"
+              }
+            }
+          ]
+        },
+        {
+          "type": "spacer",
+          "width": 0,
+          "height": {
+            "bind": "layout.body_gap",
+            "unit": "px"
+          }
+        },
+        {
+          "type": "container",
+          "id": "catch_body",
+          "when": {
+            "bind": "catch_tab"
+          },
+          "width": 100,
+          "height": {
+            "bind": "layout.body_height",
+            "unit": "px"
+          },
+          "display_direction": "column",
+          "spacing": "together",
+          "bg_color": {
+            "bind": "colors.transparent"
+          },
+          "text_color": {
+            "bind": "colors.text"
+          },
+          "radius": {
+            "bind": "layout.radius"
+          },
+          "elements": [
+            {
+              "type": "container",
+              "width": 100,
+              "height": {
+                "bind": "layout.catch_height",
+                "unit": "px"
+              },
+              "display_direction": "row",
+              "spacing": "together",
+              "gap": {
+                "bind": "catch_gap_percent"
+              },
+              "bg_color": {
+                "bind": "colors.transparent"
+              },
+              "text_color": {
+                "bind": "colors.text"
+              },
+              "radius": {
+                "bind": "layout.radius"
+              },
+              "elements": [
+                {
+                  "type": "container",
+                  "when": {
+                    "bind": "empty_catch"
+                  },
+                  "width": 100,
+                  "height": 100,
+                  "padding": {
+                    "bind": "layout.card_padding"
+                  },
+                  "display_direction": "column",
+                  "spacing": "together",
+                  "bg_color": {
+                    "bind": "colors.card"
+                  },
+                  "text_color": {
+                    "bind": "colors.text"
+                  },
+                  "radius": {
+                    "bind": "layout.radius"
+                  },
+                  "elements": [
+                    {
+                      "type": "spacer",
+                      "width": 0,
+                      "height": {
+                        "bind": "empty_gap",
+                        "unit": "px"
+                      }
+                    },
+                    {
+                      "type": "textbox",
+                      "width": 100,
+                      "height": {
+                        "bind": "heading_height",
+                        "unit": "px"
+                      },
+                      "text": "The catch tray is empty",
+                      "font": "heading",
+                      "text_align": "center",
+                      "horizontal_text_align": "none",
+                      "vertical_text_align": "none",
+                      "bg_color": {
+                        "bind": "colors.transparent"
+                      },
+                      "text_color": {
+                        "bind": "colors.text"
+                      }
+                    },
+                    {
+                      "type": "spacer",
+                      "width": 0,
+                      "height": {
+                        "bind": "layout.item_gap",
+                        "unit": "px"
+                      }
+                    },
+                    {
+                      "type": "textbox",
+                      "width": 100,
+                      "height": {
+                        "bind": "body_font_height",
+                        "unit": "px"
+                      },
+                      "text": "Browse the shop or start your next round.",
+                      "font": "body",
+                      "text_align": "center",
+                      "horizontal_text_align": "none",
+                      "vertical_text_align": "none",
+                      "bg_color": {
+                        "bind": "colors.transparent"
+                      },
+                      "text_color": {
+                        "bind": "colors.muted"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "use": "catch_card",
+                  "repeat": "catches"
+                }
+              ]
+            },
+            {
+              "type": "spacer",
+              "width": 0,
+              "height": {
+                "bind": "layout.card_gap",
+                "unit": "px"
+              }
+            },
+            {
+              "type": "container",
+              "width": 100,
+              "height": {
+                "bind": "layout.sale_height",
+                "unit": "px"
+              },
+              "padding": {
+                "bind": "layout.sale_padding"
+              },
+              "display_direction": "column",
+              "spacing": "together",
+              "bg_color": {
+                "bind": "colors.card"
+              },
+              "text_color": {
+                "bind": "colors.text"
+              },
+              "radius": {
+                "bind": "layout.radius"
+              },
+              "elements": [
+                {
+                  "type": "spacer",
+                  "width": 0,
+                  "height": {
+                    "bind": "layout.sale_top_gap",
+                    "unit": "px"
+                  }
+                },
+                {
+                  "type": "container",
+                  "width": 100,
+                  "height": {
+                    "bind": "layout.sale_action_height",
+                    "unit": "px"
+                  },
+                  "display_direction": "row",
+                  "spacing": "between",
+                  "bg_color": {
+                    "bind": "colors.transparent"
+                  },
+                  "text_color": {
+                    "bind": "colors.text"
+                  },
+                  "radius": {
+                    "bind": "layout.radius"
+                  },
+                  "elements": [
+                    {
+                      "type": "container",
+                      "width": 27,
+                      "height": 100,
+                      "display_direction": "column",
+                      "spacing": "together",
+                      "bg_color": {
+                        "bind": "colors.transparent"
+                      },
+                      "text_color": {
+                        "bind": "colors.text"
+                      },
+                      "radius": {
+                        "bind": "layout.radius"
+                      },
+                      "elements": [
+                        {
+                          "type": "textbox",
+                          "width": 100,
+                          "height": {
+                            "bind": "small_height",
+                            "unit": "px"
+                          },
+                          "text": "RAW CATCH",
+                          "font": "small",
+                          "text_align": "left",
+                          "horizontal_text_align": "none",
+                          "vertical_text_align": "none",
+                          "bg_color": {
+                            "bind": "colors.transparent"
+                          },
+                          "text_color": {
+                            "bind": "colors.muted"
+                          }
+                        },
+                        {
+                          "type": "textbox",
+                          "width": 100,
+                          "height": {
+                            "bind": "title_height",
+                            "unit": "px"
+                          },
+                          "text": "${value}$",
+                          "variables": {
+                            "value": {
+                              "bind": "catch_value"
+                            }
+                          },
+                          "font": "title",
+                          "text_align": "left",
+                          "horizontal_text_align": "none",
+                          "vertical_text_align": "none",
+                          "bg_color": {
+                            "bind": "colors.transparent"
+                          },
+                          "text_color": {
+                            "bind": "colors.accent"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "button",
+                      "id": "sell",
+                      "width": 27,
+                      "height": 100,
+                      "text": "Sell raw catch",
+                      "on_click": "sell_catch",
+                      "has_on_click": {
+                        "bind": "has_catch"
+                      },
+                      "font": "body",
+                      "bg_color": {
+                        "bind": "sell_color"
+                      },
+                      "text_color": {
+                        "bind": "sell_text_color"
+                      },
+                      "radius": {
+                        "bind": "layout.button_radius"
+                      },
+                      "border_color": {
+                        "bind": "colors.accent"
+                      },
+                      "border_width": {
+                        "bind": "layout.button_border"
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "id": "refine",
+                      "width": 40,
+                      "height": 100,
+                      "text": "Refine / orders soon",
+                      "on_click": "noop",
+                      "has_on_click": false,
+                      "font": "body",
+                      "bg_color": {
+                        "bind": "colors.disabled"
+                      },
+                      "text_color": {
+                        "bind": "colors.muted"
+                      },
+                      "radius": {
+                        "bind": "layout.button_radius"
+                      },
+                      "border_color": {
+                        "bind": "colors.accent"
+                      },
+                      "border_width": {
+                        "bind": "layout.button_border"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "container",
+          "id": "item_body",
+          "when": {
+            "bind": "item_tab"
+          },
+          "width": 100,
+          "height": {
+            "bind": "layout.body_height",
+            "unit": "px"
+          },
+          "display_direction": "row",
+          "spacing": "together",
+          "wrap": true,
+          "gap": {
+            "bind": "card_gap_percent"
+          },
+          "wrap_gap": {
+            "bind": "card_wrap_gap_percent"
+          },
+          "bg_color": {
+            "bind": "colors.transparent"
+          },
+          "text_color": {
+            "bind": "colors.text"
+          },
+          "radius": {
+            "bind": "layout.radius"
+          },
+          "elements": [
+            {
+              "use": "item_card",
+              "repeat": "items"
+            }
+          ]
+        },
+        {
+          "type": "spacer",
+          "width": 0,
+          "height": {
+            "bind": "layout.body_gap",
+            "unit": "px"
+          }
+        },
+        {
+          "type": "container",
+          "id": "message",
+          "width": 100,
+          "height": {
+            "bind": "layout.message_height",
+            "unit": "px"
+          },
+          "display_direction": "column",
+          "spacing": "together",
+          "bg_color": {
+            "bind": "colors.transparent"
+          },
+          "text_color": {
+            "bind": "colors.text"
+          },
+          "radius": {
+            "bind": "layout.radius"
+          },
+          "elements": [
+            {
+              "type": "textbox",
+              "width": 100,
+              "height": 100,
+              "text": "${message}$",
+              "variables": {
+                "message": {
+                  "bind": "shop.message"
+                }
+              },
+              "font": "body",
+              "text_align": "left",
+              "horizontal_text_align": "none",
+              "vertical_text_align": "none",
+              "bg_color": {
+                "bind": "colors.transparent"
+              },
+              "text_color": {
+                "bind": "colors.accent"
+              }
+            }
+          ]
+        },
+        {
+          "type": "spacer",
+          "width": 0,
+          "height": {
+            "bind": "layout.footer_gap",
+            "unit": "px"
+          }
+        },
+        {
+          "type": "container",
+          "id": "footer",
+          "width": 100,
+          "height": {
+            "bind": "layout.footer_height",
+            "unit": "px"
+          },
+          "display_direction": "row",
+          "spacing": "between",
+          "bg_color": {
+            "bind": "colors.transparent"
+          },
+          "text_color": {
+            "bind": "colors.text"
+          },
+          "radius": {
+            "bind": "layout.radius"
+          },
+          "elements": [
+            {
+              "type": "textbox",
+              "width": 60,
+              "height": 100,
+              "text": "1-7: browse / Enter: sell, then continue",
+              "font": "small",
+              "text_align": "left",
+              "horizontal_text_align": "none",
+              "vertical_text_align": "center",
+              "bg_color": {
+                "bind": "colors.transparent"
+              },
+              "text_color": {
+                "bind": "colors.muted"
+              }
+            },
+            {
+              "type": "button",
+              "id": "next",
+              "width": 28,
+              "height": 100,
+              "text": {
+                "bind": "next_text"
+              },
+              "on_click": "next_round",
+              "has_on_click": true,
+              "font": "body",
+              "bg_color": {
+                "bind": "colors.button"
+              },
+              "text_color": {
+                "bind": "colors.text"
+              },
+              "radius": {
+                "bind": "layout.button_radius"
+              },
+              "border_color": {
+                "bind": "colors.accent"
+              },
+              "border_width": {
+                "bind": "layout.button_border"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
