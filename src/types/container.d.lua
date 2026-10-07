@@ -1,0 +1,38 @@
+---@meta
+
+---@class Container
+---@field is_container boolean
+---@field x number Resolved screen x in pixels.
+---@field x_spec? string Position unit string, recalculated during layout.
+---@field y number Resolved screen y in pixels.
+---@field y_spec? string Position unit string, recalculated during layout.
+---@field height number Resolved content height in pixels.
+---@field height_spec? string Size unit string, recalculated during layout.
+---@field width number Resolved content width in pixels.
+---@field width_spec? string Size unit string, recalculated during layout.
+---@field x_padding number
+---@field y_padding number
+---@field display_direction "row" | "column"
+---@field spacing "between" | "evenly" | "together"
+---@field bg_color number[]
+---@field text_color number[]
+---@field radius number
+---@field wrap boolean Wrap children into new rows or columns when they exceed the container's main-axis size.
+---@field wrap_gap number Percent gap between wrapped rows or columns, based on container height for rows or width for columns.
+---@field gap number Minimum percent gap between children, based on container width for rows or height for columns.
+---@field elements table
+---@field render fun(self: Container) Draws the container and elements to the screen
+---@field layout fun(self: Container) Calculates child positions after layout properties change
+local Container = {}
+
+---Add a component. Nested container sizes are outer percentages; their padding is in pixels. Image requires image; quad selects one sprite. Spacer requires width and height.
+---@param component_type "button" | "textbox" | "spacer" | "image" | "container" Element to add.
+---@param parameters? {width?: number | "fit", height?: number | "fit", text?: string, variables?: table<string, any>, on_click?: function, has_on_click?: boolean, x_padding?: number, y_padding?: number, horizontal_text_align?: "center" | "none", vertical_text_align?: "center" | "none", text_align?: "left" | "center" | "right", font?: love.Font, bg_color?: number[], text_color?: number[], radius?: number, border_color?: number[], border_width?: number, image?: love.Image, quad?: love.Quad, padding?: number, display_direction?: "row" | "column", spacing?: "between" | "evenly" | "together", wrap?: boolean, wrap_gap?: number, gap?: number}
+---@return Element | Container
+function Container:add_element(component_type, parameters) end
+
+---Check for any click of the child elements
+---@param mouse_x number Current x position of the mouse
+---@param mouse_y number Current y position of the mouse
+---@return boolean True if a child handled the click, including inside nested containers.
+function Container:check_clicks(mouse_x, mouse_y) end

@@ -1,0 +1,112 @@
+{
+  "templates": {
+    "label": {
+      "type": "textbox", "width": 100, "height": "24px",
+      "font": "body", "text_align": "left",
+      "bg_color": [0, 0, 0, 0], "text_color": {"bind": "colors.text"}
+    },
+    "button": {
+      "type": "button", "width": 100, "height": "44px",
+      "font": "body", "radius": 6, "border_width": 0,
+      "bg_color": {"bind": "colors.button"}, "text_color": {"bind": "colors.text"}
+    },
+    "catch_card": {
+      "type": "container", "id": {"bind": "catch_id"},
+      "width": "18.8%", "height": 100, "padding": 12, "radius": 8,
+      "spacing": "between", "bg_color": {"bind": "colors.card"},
+      "elements": [
+        {"type": "image", "width": "76px", "height": "76px", "image": {"bind": "fish_image"}, "quad": {"bind": "catch_quad"}},
+        {"use": "label", "height": "36px", "text": {"bind": "item.name"}},
+        {"use": "label", "height": "20px", "font": "small", "text": {"bind": "catch_stats"}, "text_color": {"bind": "colors.muted"}},
+        {"use": "label", "text": {"bind": "catch_price"}, "text_color": {"bind": "colors.accent"}}
+      ]
+    },
+    "pack_card": {
+      "type": "container", "width": "32%", "height": 100,
+      "padding": 20, "radius": 8, "spacing": "between",
+      "bg_color": {"bind": "colors.card"},
+      "elements": [
+        {"use": "label", "height": "22px", "font": "small", "text": {"bind": "item.tag"}, "text_color": {"bind": "colors.accent"}},
+        {"use": "label", "height": "56px", "font": "title", "text": {"bind": "item.name"}},
+        {"use": "label", "height": "90px", "text": {"bind": "item.description"}, "text_color": {"bind": "colors.muted"}},
+        {"use": "label", "font": "small", "text": {"bind": "bought_text"}},
+        {
+          "type": "container", "height": "44px", "display_direction": "row", "spacing": "between",
+          "elements": [
+            {"use": "label", "width": "30%", "height": 100, "font": "heading", "text": {"bind": "pack_price"}},
+            {"use": "button", "id": {"bind": "item.id"}, "width": "68%", "text": {"bind": "buy_text"}, "on_click": "buy",
+             "bg_color": {"bind": "buy_color"}, "text_color": {"bind": "buy_text_color"}}
+          ]
+        }
+      ]
+    }
+  },
+  "window": [
+    {
+      "type": "container", "id": "shop_root",
+      "x": {"bind": "viewport.x"}, "y": {"bind": "viewport.y"},
+      "width": {"bind": "root_width"}, "height": {"bind": "root_height"},
+      "x_padding": 32, "y_padding": 24, "radius": 8,
+      "bg_color": {"bind": "colors.panel"},
+      "elements": [
+        {
+          "type": "container", "height": "40px", "display_direction": "row",
+          "elements": [
+            {"use": "label", "width": "60%", "height": 100, "font": "title", "text": "Hatchery shop"},
+            {"use": "label", "width": "40%", "height": 100, "font": "small", "text_align": "right", "text": {"bind": "phase_title"}, "text_color": {"bind": "colors.accent"}}
+          ]
+        },
+        {"type": "spacer", "width": 100, "height": "12px"},
+        {
+          "type": "container", "height": "40px", "display_direction": "row",
+          "elements": [
+            {"use": "label", "width": "40%", "height": 100, "text": {"bind": "cash"}, "text_color": {"bind": "colors.accent"}},
+            {"use": "label", "width": "30%", "height": 100, "text": {"bind": "round"}},
+            {"use": "label", "width": "30%", "height": 100, "text_align": "right", "text": {"bind": "pond_stock"}}
+          ]
+        },
+        {"type": "spacer", "width": 100, "height": "20px"},
+        {
+          "type": "container", "id": "sell_body", "height": "320px", "when": {"bind": "sell_phase"},
+          "elements": [
+            {"use": "label", "height": "28px", "font": "heading", "text": "Your catch"},
+            {"type": "spacer", "width": 100, "height": "12px"},
+            {
+              "type": "container", "height": "180px", "display_direction": "row", "spacing": "between",
+              "elements": [
+                {"use": "catch_card", "repeat": "catches"},
+                {"use": "label", "height": 100, "text": "No fish to sell this round. Continue to the pack shop.", "when": {"bind": "empty_catch"}, "text_color": {"bind": "colors.muted"}}
+              ]
+            },
+            {"type": "spacer", "width": 100, "height": "12px"},
+            {
+              "type": "container", "height": "88px", "padding": 12,
+              "display_direction": "row", "spacing": "between",
+              "elements": [
+                {"use": "button", "id": "sell_catch", "width": "48%", "text": {"bind": "sale_text"}, "on_click": "sell_catch"},
+                {"use": "button", "width": "48%", "text": "Process catch (soon)", "has_on_click": false,
+                 "bg_color": {"bind": "colors.disabled"}, "text_color": {"bind": "colors.muted"}}
+              ]
+            }
+          ]
+        },
+        {
+          "type": "container", "id": "pack_body", "height": "320px",
+          "display_direction": "row", "spacing": "between", "when": {"bind": "pack_phase"},
+          "elements": [{"use": "pack_card", "repeat": "packs"}]
+        },
+        {"type": "spacer", "width": 100, "height": "12px"},
+        {"use": "label", "height": "32px", "font": "small", "text": {"bind": "message"}, "text_color": {"bind": "colors.muted"}},
+        {"type": "spacer", "width": 100, "height": "12px"},
+        {
+          "type": "container", "height": "44px", "display_direction": "row", "spacing": "between",
+          "elements": [
+            {"use": "label", "height": 100, "text": "Enter: sell / continue to packs", "when": {"bind": "sell_phase"}, "font": "small", "text_color": {"bind": "colors.muted"}},
+            {"use": "label", "width": "65%", "height": 100, "text": "Enter: start next round", "when": {"bind": "pack_phase"}, "font": "small", "text_color": {"bind": "colors.muted"}},
+            {"use": "button", "id": "next_round", "width": "32%", "text": "Next round", "on_click": "next_round", "when": {"bind": "pack_phase"}}
+          ]
+        }
+      ]
+    }
+  ]
+}

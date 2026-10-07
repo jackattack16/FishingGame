@@ -26,7 +26,7 @@ docs/update-setup
 Use a short imperative subject with a simple type prefix:
 
 ```text
-feat: add fishing minigame
+feat: add fishing minigamee
 fix: prevent duplicate fish rewards
 balance: adjust common fish value
 docs: update setup instructions

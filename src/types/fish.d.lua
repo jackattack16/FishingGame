@@ -9,6 +9,9 @@
 ---@field multiplier number
 ---@field rarity integer
 ---@field price number
+---@field sell_price number
+---@field buy_price number
+---@field draw fun(self: Fish, x: number, y: number, rotation?: number, scale_x?: number, scale_y?: number, origin_x?: number, origin_y?: number) Draw the sprite; rotation is in radians and origin is in sprite pixels.
 local Fish = {}
 
 ---@class FishSpecies
@@ -21,4 +24,5 @@ local Fish = {}
 ---@field multiplier number
 ---@field rarity integer
 ---@field sprite_index integer
+---@field breed_chance number Chance from 0 to 1 for one pair to produce offspring per round.
 local FishSpecies = {}

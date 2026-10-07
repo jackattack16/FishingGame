@@ -1,0 +1,13 @@
+{
+  "window": [
+    {
+      "type": "container",
+      "id": "backdrop",
+      "width": "full",
+      "height": "full",
+      "bg_color": {
+        "bind": "colors.backdrop"
+      }
+    }
+  ]
+}
