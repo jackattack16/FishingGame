@@ -1,2 +1,3 @@
 _love2d_tools_bridge.lua
 conf.lua
+src/vendor/**

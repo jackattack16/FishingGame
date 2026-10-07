@@ -282,7 +282,7 @@ function love.keypressed(key, scancode, isrepeat)
 			for index = 1, 4 do
 				if key == tostring(index) then
 					game_state.fish_released_this_round[#game_state.fish_released_this_round + 1] =
-					game_state.fish_pack[index]
+						game_state.fish_pack[index]
 					game_state.fish_pack = {}
 					game_state.state = "shop_packs"
 					MESSAGE = "Buy fish pack (f) \n Buy Chemical Pack (c) \nExit (e)"

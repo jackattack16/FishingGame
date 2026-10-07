@@ -60,7 +60,7 @@ function Shop.buy(item)
 		return false
 	end
 	game_state.money = math.floor((game_state.money - item.price) * 100 + 0.5) / 100
-	
+
 	game_state.shop_purchases[item.id] = owned + 1
 	Shop.message = "Purchased " .. item.name .. " for " .. dollars(item.price) .. "."
 	invalidate()

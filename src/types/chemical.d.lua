@@ -10,8 +10,6 @@
 ---@field duration number
 local Food = {}
 
-
-
 ---@class Piscicide
 ---@field name string
 ---@field type "piscicide"
@@ -21,8 +19,6 @@ local Food = {}
 ---@field price number
 ---@field duration number
 local Piscicide = {}
-
-
 
 ---@class Sterilizer
 ---@field name string
@@ -34,7 +30,6 @@ local Piscicide = {}
 ---@field price number
 ---@field duration number
 local Sterilizer = {}
-
 
 ---@alias Chemical Food | Piscicide | Sterilizer
 
