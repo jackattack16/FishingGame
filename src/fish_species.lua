@@ -11,6 +11,7 @@ local fish_species = {
 		multiplier = 1,
 		rarity = 1,
 		sprite_index = 1,
+		breed_chance = 0.08,
 	},
 	pacific_sardine = {
 		name = "Pacific Sardine",
@@ -22,6 +23,7 @@ local fish_species = {
 		multiplier = 1,
 		rarity = 1,
 		sprite_index = 2,
+		breed_chance = 0.09,
 	},
 	atlantic_herring = {
 		name = "Atlantic Herring",
@@ -33,6 +35,7 @@ local fish_species = {
 		multiplier = 1,
 		rarity = 1,
 		sprite_index = 3,
+		breed_chance = 0.09,
 	},
 	lanternfish = {
 		name = "Lanternfish",
@@ -44,6 +47,7 @@ local fish_species = {
 		multiplier = 1,
 		rarity = 4,
 		sprite_index = 4,
+		breed_chance = 0.14,
 	},
 	atlantic_cod = {
 		name = "Atlantic Cod",
@@ -55,6 +59,7 @@ local fish_species = {
 		multiplier = 1,
 		rarity = 2,
 		sprite_index = 5,
+		breed_chance = 0.10,
 	},
 	bluefish = {
 		name = "Bluefish",
@@ -66,6 +71,7 @@ local fish_species = {
 		multiplier = 1,
 		rarity = 3,
 		sprite_index = 6,
+		breed_chance = 0.12,
 	},
 	tuna = {
 		name = "Tuna",
@@ -77,6 +83,7 @@ local fish_species = {
 		multiplier = 1,
 		rarity = 3,
 		sprite_index = 7,
+		breed_chance = 0.11,
 	},
 }
 
