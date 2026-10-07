@@ -19,17 +19,21 @@ on every push and pull request. Other editors can use the same StyLua config.
 
 ## Early goals
 
-After using the round's bait, the hatchery shop opens. Sell the catch, browse
-with the mouse or keys 1-7, then choose **Next round**. Enter sells the catch
-first and continues on the next press. Fish, food, chemicals, equipment and
-refining purchases deduct cash and show ownership; their gameplay effects
-are placeholders. Financing and restaurant orders are shown as coming soon.
+After using the round's bait, the hatchery shop opens in **Sell / Process**.
+Selling pays for the catch and replaces that screen with **Fish pack**,
+**Chemical pack** and **Machine pack** cards. An empty catch can continue
+directly to packs. Buy with the mouse, then choose **Next round**; Enter sells
+or continues in the first phase and starts the next round in the second.
+Processing is coming soon. Pack purchases deduct cash and show purchase counts;
+pack contents and their gameplay effects are placeholders.
 
 The shop uses the components in `src/ui/`: nested containers lay out the
 sections and cards, text boxes handle labels, and image elements draw fish.
-Edit `src/ui/shop_theme.lua` for colors, font sizes or a custom font path,
-padding, spacing, card dimensions and corner/border styling. The component
-layout is in `assets/ui/shop.json`; Lua bindings are in `src/ui/shop_menu.lua`.
+Edit `assets/ui/shop.json` for layout, padding, card dimensions and corner
+styling. Sizes are written directly, such as `"44px"` or `"32%"`; shared label,
+button and card templates keep repeated styling together. Edit
+`src/ui/shop_theme.lua` for the palette, fonts and overall shop size.
+Lua bindings are in `src/ui/shop_menu.lua`.
 The fishing HUD is in `assets/ui/fishing_hud.json`. See `assets/ui/README.md`
 for declaration syntax and loader examples. Items and buying behavior are in
 `src/shop.lua`. Reload the game after theme edits.

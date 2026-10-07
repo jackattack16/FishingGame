@@ -42,6 +42,18 @@
         {
           "type": "textbox",
           "width": "100%",
+          "text": "Fish left: ${fish}$",
+          "variables": {
+            "fish": {
+              "bind": "fish"
+            }
+          },
+          "bg_color": [0, 0, 0, 0],
+          "text_color": [1, 1, 1]
+        },
+        {
+          "type": "textbox",
+          "width": "100%",
           "y_padding": 5,
           "text": "Press y to save catch",
           "bg_color": [0, 0, 0, 0],

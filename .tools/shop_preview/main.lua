@@ -97,109 +97,75 @@ function love.load()
 			end,
 		},
 		{
-			"fish",
+			"shop-packs",
 			function()
-				click_control("tab2")
-				assert(shop.tab == 2, "Nested tab buttons must switch categories")
+				local value = require("src.game_functions").get_sum_of_fish_values(state.fish_caught_this_round)
+				click_control("sell_catch")
+				assert(
+					shop.phase == "packs"
+						and #state.fish_caught_this_round == 0
+						and math.abs(state.money - 250 - value) < 0.001
+				)
 				shop.draw()
+				assert(not shop.controls.sell_body and shop.controls.pack_body, "Selling must replace the first phase")
+			end,
+		},
+		{
+			"shop-packs-bought",
+			function()
+				local money = state.money
+				click_control("fish_pack")
+				click_control("chemical_pack")
+				click_control("machine_pack")
+				assert(math.abs(state.money - money + 112) < 0.001)
 				assert(
-					shop.controls.common_fry.y == shop.controls.adult_carp.y
-						and shop.controls.adult_carp.y == shop.controls.cod_fry.y,
-					"Three percentage-sized cards must fit on the first row"
-				)
-				assert(
-					shop.controls.tuna.y == shop.controls.lanternfish.y
-						and shop.controls.tuna.y > shop.controls.cod_fry.y
+					state.shop_purchases.fish_pack == 1
+						and state.shop_purchases.chemical_pack == 1
+						and state.shop_purchases.machine_pack == 1
 				)
 			end,
 		},
 		{
-			"food-bought",
-			function()
-				love.keypressed("3")
-				click_control("pond_feed")
-				click_control("pond_feed")
-				assert(state.money == 240 and state.shop_purchases.pond_feed == 2)
-			end,
-		},
-		{
-			"chemicals",
-			function()
-				love.keypressed("4")
-			end,
-		},
-		{
-			"equipment-owned",
-			function()
-				love.keypressed("5")
-				click_control("water_filter")
-				assert(state.money == 180 and state.shop_purchases.water_filter == 1)
-			end,
-		},
-		{
-			"refining",
-			function()
-				love.keypressed("6")
-			end,
-		},
-		{
-			"finance",
-			function()
-				love.keypressed("7")
-			end,
-		},
-		{
-			"empty-catch",
-			function()
-				love.keypressed("1")
-				love.keypressed("return")
-				assert(#state.fish_caught_this_round == 0)
-			end,
-		},
-		{
-			"large-window",
+			"shop-large-window",
 			function()
 				love.window.setMode(1920, 1080, { resizable = true })
 				love.resize()
-				love.keypressed("2")
-				shop.draw()
-				assert(shop.controls.common_fry.y == shop.controls.cod_fry.y, "Cards must still fit at large sizes")
 			end,
 		},
 		{
-			"small-window",
+			"shop-small-window",
 			function()
 				love.window.setMode(800, 600, { resizable = true })
 				love.resize()
-				love.keypressed("5")
 				local money = state.money
-				click_control("pond_monitor")
+				click_control("fish_pack")
 				assert(
-					state.money == money - 45 and state.shop_purchases.pond_monitor == 1,
-					"Click coordinates must remain correct after resizing"
+					math.abs(state.money - money + 22) < 0.001 and state.shop_purchases.fish_pack == 2,
+					"Resized clicks must still work"
 				)
 			end,
 		},
 		{
-			"insufficient-funds",
+			"shop-insufficient-funds",
 			function()
 				state.money = 0
-				love.keypressed("2")
-				click_control("common_fry")
-				assert(state.money == 0 and not state.shop_purchases.common_fry)
+				shop.resize()
+				click_control("fish_pack")
+				assert(state.money == 0 and state.shop_purchases.fish_pack == 2, "Cannot overspend")
 			end,
 		},
 		{
-			"theme-preview",
+			"shop-empty-catch",
 			function()
-				shop.theme.colors.panel = { 0.13, 0.08, 0.11, 1 }
-				shop.theme.colors.card = { 0.22, 0.14, 0.16, 1 }
-				shop.theme.colors.accent = { 0.97, 0.72, 0.36, 1 }
-				shop.theme.colors.button = { 0.40, 0.23, 0.22, 1 }
-				shop.theme.fonts.body, shop.theme.fonts.heading = 18, 22
-				shop.theme.layout.radius, shop.theme.layout.button_border = 14, 1
-				shop.load()
-				love.keypressed("3")
+				shop.open()
+				assert(shop.phase == "sell")
+			end,
+		},
+		{
+			"shop-empty-packs",
+			function()
+				love.keypressed("return")
+				assert(shop.phase == "packs" and state.money == 0, "An empty catch must continue without payment")
 			end,
 		},
 	}
@@ -211,8 +177,10 @@ function love.update()
 		if stage > #stages then
 			love.keypressed("return")
 			assert(state.state == "catching" and state.round == 2 and state.bait_left == 5)
-			assert(state.shop_purchases.pond_feed == 2 and state.shop_purchases.water_filter == 1)
-			print("All seven tabs rendered; real keyboard/mouse purchases, sale, resize and continue verified")
+			assert(state.shop_purchases.fish_pack == 2 and state.shop_purchases.machine_pack == 1)
+			print(
+				"Both shop phases rendered; real purchases, automatic sale transition, resize, empty catch and next round verified"
+			)
 			love.event.quit()
 			return
 		end
@@ -220,8 +188,27 @@ function love.update()
 	end
 end
 
+local function check_bounds(container)
+	local left, top = container.x + container.x_padding, container.y + container.y_padding
+	for _, child in ipairs(container.elements) do
+		local width = child.width + (child.is_container and child.x_padding * 2 or 0)
+		local height = child.height + (child.is_container and child.y_padding * 2 or 0)
+		assert(child.x >= left - 0.01 and child.y >= top - 0.01, "Child extends before its container")
+		assert(child.x + width <= left + container.width + 0.01, "Child exceeds container width")
+		assert(child.y + height <= top + container.height + 0.01, "Child exceeds container height")
+		if child.is_container then
+			check_bounds(child)
+		elseif child.text then
+			assert(child.text:getHeight() <= child.height + 1, "Text overflows: " .. child.text_string)
+		end
+	end
+end
+
 function love.draw()
 	game_draw()
+	if state.state == "shop" then
+		check_bounds(shop.ui)
+	end
 	if stage <= #stages and not captured then
 		captured = true
 		local name = stages[stage][1]

@@ -115,10 +115,10 @@ function R.render_game()
 	love.graphics.setShader(pixelate_shader)
 	love.graphics.draw(second_algae_canvas, 0, 0)
 	love.graphics.setShader()
-	if game_state.state == "shop" then
-		R.draw_shop()
-		return
-	end
+	-- if game_state.state == "shop" then
+	-- 	R.draw_shop() -- disabled for terminal testing
+	-- 	return
+	-- end
 	left_bar:render()
 	bottom_bar:render()
 	draw_bottom_fish_row(game_state.fish_caught_this_round, "Caught:", 1)

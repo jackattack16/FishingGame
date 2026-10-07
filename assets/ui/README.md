@@ -33,7 +33,7 @@ A named getter receives the current scope and returns a value. The scope include
 `parent`, plus `item` and `index` inside a repeated component.
 
 Properties are resolved when the tree is built. Rebuild the tree when a property,
-condition, or repeated collection changes. The shop already rebuilds on tab
+condition, or repeated collection changes. The shop already rebuilds on phase
 changes, purchases, sales and window resizing.
 
 Root position and dimensions use the original container rules: numeric pixels,
@@ -94,9 +94,28 @@ Fonts can name an entry in `context.fonts` or use `"default"`. Image strings are
 asset paths; images are cached per build. A binding can also supply a `love.Font`,
 `love.Image` or `love.Quad` directly, as the shop does for fish sprites.
 
-Shop values and callbacks are in `src/ui/shop_menu.lua`; colors, fonts and logical
-pixel dimensions remain in `src/ui/shop_theme.lua`. Shop items and gameplay
-behavior remain in `src/shop.lua`. Reload the game after editing JSON.
+## Editing the shop
+
+`shop.json` contains two conditional sections: `sell_body` and `pack_body`.
+Selling replaces the first with the second. Change individual sizes directly:
+
+```json
+{ "use": "label", "height": "28px", "font": "heading", "text": "Your catch" }
+```
+
+The shop scales pixel strings, container padding, radii and borders to fit the
+window; percentages keep their usual meaning. Use `"40px"` for a fixed height
+and `"32%"` for a relative width. A numeric child size such as `40` means **40%**.
+Keep a column's total child heights within its available height.
+
+The `label` and `button` templates hold common styles; `catch_card` and
+`pack_card` hold repeated card layouts. Override a property on an instance to
+change just that component. Bindings supply changing data such as cash, prices,
+fish sprites and the active phase.
+
+Shared colors, fonts and overall window dimensions are in `src/ui/shop_theme.lua`.
+Pack names, descriptions, prices and buying behavior are in `src/shop.lua`;
+UI bindings and callbacks are in `src/ui/shop_menu.lua`. Reload after edits.
 
 ## Verification
 
@@ -106,5 +125,7 @@ Run the focused loader checks with PowerShell:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .tools/json_ui_smoke/run.ps1
 ```
 
-The existing `.tools/shop_preview/run.ps1` also exercises all seven tabs, real
-mouse/keyboard actions, affordability, ownership, selling and resizing.
+The existing `.tools/shop_preview/run.ps1` exercises both phases, real mouse
+and keyboard actions, affordability, purchase counts, empty catches and resizing.
+It checks that children and wrapped text fit their containers and saves screenshots.
+Run `.tools/shop_smoke/run.ps1` for the money and round-transition checks.
